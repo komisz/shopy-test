@@ -6,12 +6,11 @@
     <title>Some title</title>
     <link rel="stylesheet" type="text/css" href="styles.css" />
     <script type="module" src="components/header.js"></script>
+    <script type="module" src="components/footer.js"></script>
   </head>
 
   <body>
-    <header>
-      <my-header />
-    </header>
+    <my-header />
 
     <main>
       <section class="hero">
@@ -26,25 +25,6 @@
       </section>
     </main>
 
-    <footer>
-      <div class="footer-ctr">
-        <div class="">Contact us</div>
-        <div class="">Shop</div>
-        <div class="">Customer Care</div>
-        <div class="">Store of Daydreams</div>
-        <div class="footer-join">Join our world</div>
-      </div>
-      <div class="footer-bottom">
-        <object
-          type="image/svg+xml"
-          id="logo"
-          height="64"
-          width="230"
-          data="./static/assets/Logo.svg"></object>
-      </div>
-      <p class="footer-copyright">© Copyright 2023</p>
-    </footer>
-
-    <script src="script.js"></script>
+    <my-footer />
   </body>
 </html>
