@@ -6,7 +6,11 @@ headerTemplate.innerHTML = `
     <div class="header-left">
       <p>Left</p>
     </div>
-    <object type="image/svg+xml" id="logo" height="32" width="106" data="../static/assets/Logo.svg"></object>
+
+    <a href="/" style="position: relative, z-index: 1; display: flex;align-items: center; height: 100%">
+      <object type="image/svg+xml" id="logo" height="32" width="106" data="../static/assets/Logo.svg" style="position: relative; z-index: -1;">
+      </object>
+    </a>
     <div class="header-right">
       <p>Right</p>
     </div>

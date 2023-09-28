@@ -3,6 +3,10 @@
   margin: 0;
 }
 
+:root {
+  --header-height: 56px;
+}
+
 body {
   margin: 0 auto;
   width: 100%;
@@ -16,13 +20,9 @@ header {
   right: 0;
   width: 100%;
   max-width: 1440px;
-  height: 56px;
+  height: var(--header-height);
   margin: 0 auto;
   z-index: 100;
-}
-
-section {
-  height: 110vh;
 }
 
 footer {
@@ -56,6 +56,9 @@ footer {
   letter-spacing: 0.1px;
 }
 
+/*
+HOME
+ */
 .hero {
   height: 720px;
   display: flex;
@@ -77,6 +80,46 @@ footer {
 .carousel {
   height: 752px;
   background: yellow;
+}
+
+/*
+PDP
+ */
+.product-img {
+  aspect-ratio: 0.75;
+  object-fit: contain;
+  width: 100%;
+}
+
+/* ?: maybe it can be the main
+ */
+.pdp-ctr {
+  display: flex;
+  margin-top: var(--header-height);
+  padding-left: 56px;
+  padding-right: 60px;
+}
+
+.product-img-ctr {
+  flex: 1;
+  display: grid;
+  grid-gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  grid-template-rows: min-content;
+}
+
+.product-info {
+  width: 41.8%;
+  background: violet;
+  padding-top: 56px;
+}
+
+.product-details {
+  width: 60%;
+  gap: 40px;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
 }
 
 @media screen and (max-width: 375px) {

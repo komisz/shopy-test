@@ -10,7 +10,7 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 0 56px;
+  padding: 0 48px 0 56px;
   background: linear-gradient(180deg, #c3d4f4 0%, rgba(195, 212, 244, 0) 100%);
 }
 
