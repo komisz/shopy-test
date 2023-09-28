@@ -1,0 +1,27 @@
+:host {
+  display: block;
+  height: inherit;
+  width: inherit;
+}
+
+.header-ctr {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 56px;
+  background: linear-gradient(180deg, #c3d4f4 0%, rgba(195, 212, 244, 0) 100%);
+}
+
+.header-left {
+  height: inherit;
+  flex-grow: 1;
+  background: pink;
+}
+
+.header-right {
+  height: inherit;
+  flex-grow: 1;
+  background: pink;
+}

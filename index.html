@@ -3,27 +3,44 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home</title>
+    <title>Some title</title>
     <link rel="stylesheet" type="text/css" href="styles.css" />
+    <script type="module" src="components/header.js"></script>
   </head>
 
   <body>
     <header>
-      <h1>TITLE</h1>
+      <my-header />
     </header>
 
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/pdp">PDP</a></li>
-        <li><a href="/plp">PLP</a></li>
-      </ul>
-    </nav>
+    <main>
+      <section class="hero">
+        <div class="hero-img">hero-img-1</div>
+        <div class="hero-img">hero-img-2</div>
+      </section>
 
-    <main>MAIN</main>
+      <div class="spacer">spacer</div>
+
+      <section class="carousel">carousel</section>
+    </main>
 
     <footer>
-      <p>FOOTER</p>
+      <div class="footer-ctr">
+        <div class="">Contact us</div>
+        <div class="">Shop</div>
+        <div class="">Customer Care</div>
+        <div class="">Store of Daydreams</div>
+        <div class="footer-join">Join our world</div>
+      </div>
+      <div class="footer-bottom">
+        <object
+          type="image/svg+xml"
+          id="logo"
+          height="64"
+          width="230"
+          data="./static/assets/Logo.svg"></object>
+      </div>
+      <p class="footer-copyright">© Copyright 2023</p>
     </footer>
 
     <script src="script.js"></script>
