@@ -4,15 +4,15 @@ headerTemplate.innerHTML = `
   <link rel="stylesheet" href="components/header.css" />
   <header>
     <div class="header-ctr">
-      <div class="header-left">
+      <div class="left">
         <a href="/plp">
-          <p>Left</p>
+          <p>Left nav</p>
         </a>
       </div>
 
       <a
         href="/"
-        style="position: relative, z-index: 1; display: flex;align-items: center; height: 100%">
+        style="position: relative, z-index: 120; display: flex;align-items: center; height: 100%">
         <object
           type="image/svg+xml"
           id="logo"
@@ -21,8 +21,8 @@ headerTemplate.innerHTML = `
           data="../static/assets/Logo.svg"
           style="position: relative; z-index: -1"></object>
       </a>
-      <div class="header-right">
-        <p>Right</p>
+      <div class="right">
+        <p>Right nav</p>
       </div>
     </div>
   </header>

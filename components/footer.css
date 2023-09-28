@@ -7,23 +7,23 @@ footer {
   align-items: center;
 }
 
-.footer-ctr {
+footer > .top {
   width: 100%;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-gap: 8px;
 }
 
-.footer-join {
-  text-align: right;
-}
-
-.footer-bottom {
+footer > .bottom {
   margin-top: auto;
   margin-bottom: 24px;
 }
 
-.footer-copyright {
+.footer-join {
+  text-align: right;
+}
+
+footer > .copyright {
   font-size: 10px;
   line-height: 12px;
   letter-spacing: 0.1px;
