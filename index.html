@@ -3,28 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Some title</title>
+    <base href="/" />
+    <title>Shopify Demo Storefront</title>
     <link rel="stylesheet" type="text/css" href="styles.css" />
-    <script type="module" src="components/header.js"></script>
-    <script type="module" src="components/footer.js"></script>
+    <script type="module" src="src/components/header.js" defer></script>
+    <script type="module" src="src/components/footer.js" defer></script>
   </head>
 
   <body>
-    <my-header />
+    <header>
+      <my-header></my-header>
+    </header>
 
-    <main>
-      <section class="hero">
-        <img class="hero-img" src="static/images/Frame-135.png"></img>
-        <img class="hero-img" src="static/images/Frame-114.png"></img>
-      </section>
+    <main data-router-outlet></main>
 
-      <div class="spacer">spacer</div>
-
-      <section class="carousel">
-        <a href="/pdp">PDP</a>
-      </section>
-    </main>
-
-    <my-footer />
+    <my-footer></my-footer>
   </body>
 </html>

@@ -1,24 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Product Listing Page</title>
-    <link rel="stylesheet" type="text/css" href="styles.css" />
-    <script type="module" src="components/header.js"></script>
-    <script type="module" src="components/footer.js"></script>
-  </head>
-
-  <body>
-    <my-header />
-
-    <main>
+export default function PLPTemplate() {
+  return `
       <section class="hero">
         <img class="hero-img" src="static/images/Frame-114.png"></img>
         <img class="hero-img" src="static/images/Frame-125.png"></img>
       </section>
 
-      <div class="spacer" ></div>
+      <div class="spacer"></div>
 
       <div class="filter-bar">
         <div class="left">LEFT filter bar</div>
@@ -48,12 +35,5 @@
         <div class="grid-item">20</div>
         <div class="grid-item">21</div>
         <div class="grid-item">22</div>
-      </div>
-
-    </main>
-
-    <my-footer />
-
-    <script src="script.js"></script>
-  </body>
-</html>
+    </div>`;
+}
