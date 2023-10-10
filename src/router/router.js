@@ -1,61 +1,80 @@
 export default class Router {
   constructor(routes) {
     this.routes = routes;
+    this.routerOutletEl = document.querySelector('[data-router-outlet]');
+
     this._loadInitialRoute();
+
+    window.addEventListener('popstate', this._handlePopstate.bind(this));
   }
 
-  loadRoute(...urlParts) {
-    const matchedRoute = this._matchUrlToRoute(urlParts);
+  loadRoute(...pathSegments) {
+    const pathname = `/${pathSegments.join('/')}`;
+    history.pushState({}, '', pathname);
 
-    const url = `/${urlParts.join('/')}`;
-    history.pushState({}, '', url);
-
-    const routerOutletElement = document.querySelectorAll(
-      '[data-router-outlet]'
-    )[0];
-
-    if (matchedRoute.path) {
-      routerOutletElement.innerHTML = matchedRoute.getTemplate(
-        matchedRoute.params
-      );
-    } else {
-      routerOutletElement.innerHTML =
-        this.routes[this.routes.length - 1].getTemplate();
-    }
+    const matchedRoute = this._matchPathToRoute(pathSegments);
+    this.routerOutletEl.innerHTML = this._getRouteTemplate(matchedRoute);
   }
 
-  _matchUrlToRoute(urlSegments) {
-    const routeParams = {};
-    const matchedRoute = this.routes.find((route) => {
+  // ?: 🧹 in-case of cleanup needed
+  // removeEventListeners() {
+  //   window.removeEventListener('popstate', this._handlePopstate.bind(this));
+  // }
+
+  _matchPathToRoute(pathSegments) {
+    for (const route of this.routes) {
       const routePathSegments = route.path.split('/').slice(1);
 
-      if (routePathSegments.length !== urlSegments.length) {
-        return false;
+      if (routePathSegments.length !== pathSegments.length) {
+        continue;
       }
 
-      const match = routePathSegments.every(
-        (routePathSegment, i) =>
-          routePathSegment === urlSegments[i] || routePathSegment[0] === ':'
-      );
+      const routeParams = {};
 
-      if (match) {
-        routePathSegments.forEach((segment, i) => {
-          if (segment[0] === ':') {
-            const propName = segment.slice(1);
-            routeParams[propName] = decodeURIComponent(urlSegments[i]);
-          }
-        });
+      const isMatch = routePathSegments.every((segment, i) => {
+        if (segment[0] === ':') {
+          const paramName = segment.slice(1);
+          routeParams[paramName] = decodeURIComponent(pathSegments[i]);
+          return true;
+        }
+        return segment === pathSegments[i];
+      });
+
+      if (isMatch) {
+        return { ...route, params: routeParams };
       }
-      return match;
-    });
+    }
 
-    return { ...matchedRoute, params: routeParams };
+    //? 💡 no route found
+    return null;
+  }
+
+  _getPathSegments() {
+    const pathname = window.location.pathname;
+    return pathname ? pathname.split('/').slice(1) : [];
+  }
+
+  _handlePopstate() {
+    const pathSegments = this._getPathSegments();
+    const matchedRoute = this._matchPathToRoute(pathSegments);
+
+    this.routerOutletEl.innerHTML = this._getRouteTemplate(matchedRoute);
   }
 
   _loadInitialRoute() {
-    const splittedPath = window.location.pathname.split('/');
-    const pathParts = splittedPath.length > 1 ? splittedPath.slice(1) : '';
+    this.loadRoute(...this._getPathSegments());
+  }
 
-    this.loadRoute(...pathParts);
+  _getRouteTemplate(route) {
+    let template;
+
+    if (route && route.getTemplate) {
+      template = route.getTemplate(route.params);
+    } else {
+      //? 💡 hardcoded 404 template from routes.js
+      template = this.routes[this.routes.length - 1].getTemplate();
+    }
+
+    return template;
   }
 }
