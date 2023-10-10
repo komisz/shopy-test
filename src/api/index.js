@@ -1,4 +1,4 @@
-import { getItemFromLocalStorage } from './storage.js';
+import { addItemToLocalStorage, getItemFromLocalStorage } from './storage.js';
 
 async function fetchJson(filepath = './src/api/productsSample.json') {
   try {
@@ -23,14 +23,14 @@ function lowercaseKeys(obj) {
   }, {});
 }
 
-async function parse(data) {
+function parse(data) {
   return data.map(lowercaseKeys);
 }
 
 async function _prepareData() {
   try {
     const data = await fetchJson();
-    const products = await parse(data);
+    const products = parse(data);
 
     addItemToLocalStorage('products', products);
   } catch (error) {
