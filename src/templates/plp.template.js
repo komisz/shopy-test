@@ -2,11 +2,10 @@ import { getProducts } from '../api/index.js';
 
 function renderProducts(products) {
   return products
-    .map((product) => {
-      return `
-    <div class="grid-item" id={product.id}>${product.id}, ${product.title}, ${product.price}</div>
-  `;
-    })
+    .map(
+      (product) =>
+        `<div class="grid-item" id={product.id}>${product.id}, ${product.title}, ${product.price}</div>`
+    )
     .join('');
 }
 
