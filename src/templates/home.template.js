@@ -81,7 +81,7 @@ export default function HomeTemplate() {
     <div class="products">
       ${products}
     </div>
-      <a href="/pdp">PDP</a>
+      <a href="/plp">Shop all</a>
   </section>
   `;
 }

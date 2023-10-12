@@ -33,9 +33,11 @@ async function _prepareData() {
 
     const products = parse(data);
     const categories = [...new Set(products.map((p) => p.category))];
+    const vendors = [...new Set(products.map((p) => p.vendor))];
 
     addItemToLocalStorage('products', products);
     addItemToLocalStorage('categories', categories);
+    addItemToLocalStorage('vendors', vendors);
   } catch (error) {
     console.error('Error:', error);
   }
@@ -46,6 +48,9 @@ function getProducts() {
 }
 function getCategories() {
   return getItemFromLocalStorage('categories');
+}
+function getVendors() {
+  return getItemFromLocalStorage('vendors');
 }
 function getProductsByCategory(filterCategories) {
   const products = getProducts();
@@ -70,4 +75,10 @@ function filterNFromArrBy(arr = [], filters = [], n = 2) {
   }, []);
 }
 
-export { _prepareData, getProducts, getProductsByCategory, getCategories };
+export {
+  _prepareData,
+  getProducts,
+  getProductsByCategory,
+  getCategories,
+  getVendors,
+};
