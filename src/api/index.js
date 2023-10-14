@@ -46,6 +46,9 @@ async function _prepareData() {
 function getProducts() {
   return getItemFromLocalStorage('products');
 }
+function getProductById(productId) {
+  return getItemFromLocalStorage('products').find((p) => p.id === productId);
+}
 function getCategories() {
   return getItemFromLocalStorage('categories');
 }
@@ -78,6 +81,7 @@ function filterNFromArrBy(arr = [], filters = [], n = 2) {
 export {
   _prepareData,
   getProducts,
+  getProductById,
   getProductsByCategory,
   getCategories,
   getVendors,
