@@ -2,18 +2,21 @@ import { getCategories, getProductsByCategory } from '../api/index.js';
 import { router } from '../router/index.js';
 
 export default class HomePage extends HTMLElement {
-  constructor() {
-    super();
-    this.activeCategories = new Set();
-    this.render();
-  }
+  activeCategories = new Set();
 
   connectedCallback() {
-    this.addEventListeners();
+    this.render();
+    this.querySelector('.carousel').addEventListener(
+      'click',
+      this.handleEventClick
+    );
   }
 
   disconnectedCallback() {
-    this.removeEventListeners();
+    this.querySelector('.carousel').removeEventListener(
+      'click',
+      this.handleEventClick
+    );
   }
 
   renderCategories(categories) {
@@ -30,53 +33,35 @@ export default class HomePage extends HTMLElement {
     return products
       .map(
         (product) => `
-      <button class="product-button" data-product-id="${product.id}">${product.title}</button>
+      <a href="/product/${product.id}" class="product-nav" data-product-id="${product.id}">${product.title}</a>
     `
       )
       .join('');
   }
 
   handleToggleCategory(event) {
-    const toggledCategoryEl = event.target;
-    const category = toggledCategoryEl.getAttribute('data-category');
-
-    if (this.activeCategories.has(category)) {
-      this.activeCategories.delete(category);
-      toggledCategoryEl.classList.remove('active');
-    } else {
-      this.activeCategories.add(category);
-      toggledCategoryEl.classList.add('active');
+    const target = event.target;
+    if (target.matches('.category-button')) {
+      const category = target.getAttribute('data-category');
+      if (this.activeCategories.has(category)) {
+        this.activeCategories.delete(category);
+        target.classList.remove('active');
+      } else {
+        this.activeCategories.add(category);
+        target.classList.add('active');
+      }
+      this.updateUi();
     }
-
-    this.updateUi();
-  }
-
-  handleGotoProduct(event) {
-    const productId = event.target.getAttribute('data-product-id');
-    router.loadRoute('product', productId);
-  }
-
-  addEventListeners() {
-    const container = this.querySelector('.carousel');
-
-    if (container) {
-      container.addEventListener('click', this.handleEventClick);
-    } else {
-      console.error('Container element not found!');
-    }
-    // document.addEventListener('click', this.handleEventClick);
-  }
-
-  removeEventListeners() {
-    document.removeEventListener('click', this.handleEventClick);
   }
 
   handleEventClick = (event) => {
-    if (event.target.classList.contains('product-button')) {
-      this.handleGotoProduct(event);
-    }
-    if (event.target.classList.contains('category-button')) {
+    event.preventDefault();
+    if (event.target.matches('.product-nav')) {
+      router.loadRoute(event.target.getAttribute('href'));
+    } else if (event.target.matches('.category-button')) {
       this.handleToggleCategory(event);
+    } else if (event.target.matches('[href="/plp"]')) {
+      router.loadRoute('/plp');
     }
   };
 

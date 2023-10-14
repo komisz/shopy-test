@@ -5,20 +5,8 @@ class MyHeader extends HTMLElement {
     this.innerHTML = `
       <div class="header-ctr">
         <div class="left">
-          <button type="button" class="my-nav">Home</button>
-        <button type="button" class="my-nav">PLP</button>
-        <button type="button" class="my-nav">PDP</button>
-        <button type="button" class="my-nav" data-customprop="5">Product</button>
-        <button
-          type="button"
-          class="my-nav"
-          style="background: yellow"
-          data-customprop="">
-          Product
-        </button>
-        <button type="button" class="my-nav" style="background: red">
-          Four-o-four
-        </button>
+          <a href="/">Home</a>
+          <a href="/plp">PLP</a>
         </div>
         <a
           href="/"
@@ -37,24 +25,17 @@ class MyHeader extends HTMLElement {
       </div>
 `;
 
-    const buttons = this.querySelectorAll('.my-nav');
+    this.querySelectorAll('a').forEach((nav) => {
+      nav.addEventListener('click', (e) => {
+        e.preventDefault();
+        const to = e.target.getAttribute('href');
 
-    buttons.forEach((buttonEl) => {
-      buttonEl.addEventListener('click', (e) => {
-        const slug = e.target.innerText?.toLowerCase();
-
-        if (!slug) {
+        if (!to) {
+          console.error('href not found');
           return;
         }
 
-        if (slug === 'home') {
-          router.loadRoute('');
-        } else if (slug === 'product') {
-          const productId = buttonEl.dataset.customprop;
-          router.loadRoute(slug, productId);
-        } else {
-          router.loadRoute(slug);
-        }
+        router.loadRoute(to);
       });
     });
   }

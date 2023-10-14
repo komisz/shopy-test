@@ -1,6 +1,5 @@
 import { PLP, PDP, Home } from '../templates/index.template.js';
-
-const home = new Home();
+import { getProducts } from '../api/index.js';
 
 export default [
   {
@@ -12,16 +11,14 @@ export default [
     get: (params) => PLP(),
   },
   {
-    path: '/pdp',
-    get: (params) => PDP(),
-  },
-  {
     path: '/product/:productId',
-    get: (params) => {
-      if (params.productId) {
-        return `<h1>Product ${params.productId}</h1>`;
+    get: ({ productId }) => {
+      const product = getProducts().find((p) => p.id === productId);
+
+      if (product) {
+        return PDP(product);
       } else {
-        return `<h1>Sorry, product not found.</h1>`;
+        return '<h1>Sorry, product not found.</h1>';
       }
     },
   },

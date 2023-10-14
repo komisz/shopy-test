@@ -1,11 +1,25 @@
 import { getCategories, getProducts } from '../api/index.js';
 import MultiSelect from '../components/multi-select.js';
 
+function handleGotoProduct(e) {
+  e.preventDefault();
+  const to = e.target.getAttribute('href');
+
+  if (!to) {
+    console.error('href not found');
+    return;
+  }
+
+  router.loadRoute(to);
+}
+
 function renderProductItem(product) {
   return `
+  <a href="/product/${product.id}" onclick="${handleGotoProduct}">
     <div class="grid-item" id="${product.id}">
       ${product.id}, ${product.title}, ${product.price}
     </div>
+    </a>
   `;
 }
 
@@ -43,14 +57,6 @@ export default function PLPTemplate() {
     .addEventListener('selectionChange', (event) => {
       const selectedOptions = event.detail.selectedOptions;
       const filterKey = event.detail.filterKey;
-
-      // Handle the selected options and filterKey
-      console.log(
-        'Selected Options:',
-        selectedOptions,
-        'in filter:',
-        filterKey
-      );
 
       updateProducts(selectedOptions, filterKey);
     });

@@ -1,4 +1,5 @@
-export default function PDPTemplate() {
+export default function PDPTemplate(product) {
+  console.log(product);
   return `
     <div
       class="pdp-ctr">
