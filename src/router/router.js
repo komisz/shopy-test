@@ -68,11 +68,11 @@ export default class Router {
   _getRouteTemplate(route) {
     let template;
 
-    if (route && route.getTemplate) {
-      template = route.getTemplate(route.params);
+    if (route && route.get) {
+      template = route.get(route.params);
     } else {
       //? 💡 hardcoded 404 template from routes.js
-      template = this.routes[this.routes.length - 1].getTemplate();
+      template = this.routes[this.routes.length - 1].get();
     }
 
     return template;

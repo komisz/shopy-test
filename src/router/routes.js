@@ -1,20 +1,23 @@
-import { PLP, Home, PDP } from '../templates/index.template.js';
+import { PLP, PDP, Home } from '../templates/index.template.js';
+
+const home = new Home();
+
 export default [
   {
     path: '/',
-    getTemplate: (params) => Home(),
+    get: () => '<home-page></home-page>',
   },
   {
     path: '/plp',
-    getTemplate: (params) => PLP(),
+    get: (params) => PLP(),
   },
   {
     path: '/pdp',
-    getTemplate: (params) => PDP(),
+    get: (params) => PDP(),
   },
   {
     path: '/product/:productId',
-    getTemplate: (params) => {
+    get: (params) => {
       if (params.productId) {
         return `<h1>Product ${params.productId}</h1>`;
       } else {
@@ -24,6 +27,6 @@ export default [
   },
   {
     path: '/404',
-    getTemplate: () => '<h1>404</h1>',
+    get: () => '<h1>404</h1>',
   },
 ];

@@ -1,87 +1,120 @@
 import { getCategories, getProductsByCategory } from '../api/index.js';
 import { router } from '../router/index.js';
 
-function renderCategories(categories) {
-  return categories
-    .map(
-      (category) =>
-        `<button class="category-button" data-category=${category} id=${category}>${category}</button>`
-    )
-    .join('');
-}
+export default class HomePage extends HTMLElement {
+  constructor() {
+    super();
+    this.activeCategories = new Set();
+    this.render();
+  }
 
-function renderCarousel(products) {
-  return products
-    .map((product) => {
-      return `<button class="product-button" data-product-id="${product.id}">${product.title}</button>`;
-    })
-    .join('');
-}
+  connectedCallback() {
+    this.addEventListeners();
+  }
 
-function handleGotoProduct(event) {
-  const productId = event.target.getAttribute('data-product-id');
-  router.loadRoute('product', productId);
-}
+  disconnectedCallback() {
+    this.removeEventListeners();
+  }
 
-function addEventListenerByClass(className, callback, event = 'click') {
-  document.addEventListener(event, function (event) {
-    if (event.target.classList.contains(className)) {
-      callback(event);
-    }
-  });
-}
+  renderCategories(categories) {
+    return categories
+      .map(
+        (category) => `
+      <button class="category-button" data-category="${category}">${category}</button>
+    `
+      )
+      .join('');
+  }
 
-export default function HomeTemplate() {
-  const categoriesEl = renderCategories(getCategories());
+  renderCarousel(products) {
+    return products
+      .map(
+        (product) => `
+      <button class="product-button" data-product-id="${product.id}">${product.title}</button>
+    `
+      )
+      .join('');
+  }
 
-  const activeCategories = [];
-  const products = renderCarousel(getProductsByCategory(activeCategories));
-
-  function handleToggleCategory(event) {
+  handleToggleCategory(event) {
     const toggledCategoryEl = event.target;
     const category = toggledCategoryEl.getAttribute('data-category');
 
-    const idx = activeCategories.findIndex((cat) => cat === category);
-    if (idx < 0) {
-      activeCategories.push(category);
-      toggledCategoryEl.classList.add('active');
-    } else {
-      activeCategories.splice(idx, 1);
+    if (this.activeCategories.has(category)) {
+      this.activeCategories.delete(category);
       toggledCategoryEl.classList.remove('active');
+    } else {
+      this.activeCategories.add(category);
+      toggledCategoryEl.classList.add('active');
     }
 
-    updateUi();
+    this.updateUi();
   }
 
-  function updateUi() {
-    const filteredProductsEl = renderCarousel(
-      getProductsByCategory(activeCategories)
+  handleGotoProduct(event) {
+    const productId = event.target.getAttribute('data-product-id');
+    router.loadRoute('product', productId);
+  }
+
+  addEventListeners() {
+    const container = this.querySelector('.carousel');
+
+    if (container) {
+      container.addEventListener('click', this.handleEventClick);
+    } else {
+      console.error('Container element not found!');
+    }
+    // document.addEventListener('click', this.handleEventClick);
+  }
+
+  removeEventListeners() {
+    document.removeEventListener('click', this.handleEventClick);
+  }
+
+  handleEventClick = (event) => {
+    if (event.target.classList.contains('product-button')) {
+      this.handleGotoProduct(event);
+    }
+    if (event.target.classList.contains('category-button')) {
+      this.handleToggleCategory(event);
+    }
+  };
+
+  updateUi() {
+    const productsContainer = this.querySelector('.products');
+    productsContainer.innerHTML = this.renderCarousel(
+      getProductsByCategory(Array.from(this.activeCategories))
     );
-    document.querySelector('.products').innerHTML = filteredProductsEl;
   }
 
-  addEventListenerByClass('product-button', handleGotoProduct);
-  addEventListenerByClass('category-button', handleToggleCategory);
+  render() {
+    const categoriesEl = this.renderCategories(getCategories());
+    const productsEl = this.renderCarousel(
+      getProductsByCategory(Array.from(this.activeCategories))
+    );
 
-  return `
-  <section class="hero">
-    <img class="hero-img" src="static/images/Frame-135.png" />
-    <img class="hero-img" src="static/images/Frame-114.png" />
-  </section>
+    this.innerHTML = `
+      <section class="hero">
+        <img class="hero-img" src="static/images/Frame-135.png" />
+        <img class="hero-img" src="static/images/Frame-114.png" />
+      </section>
 
-  <div class="spacer">spacer</div>
+      <div class="spacer">spacer</div>
 
-  <section class="carousel">
-    <div>
-      <h3>New in</h3>
-    </div>
-    <div class="categories">
-        ${categoriesEl}
-    </div>
-    <div class="products">
-      ${products}
-    </div>
-      <a href="/plp">Shop all</a>
-  </section>
-  `;
+      <section class="carousel">
+        <div>
+          <h3>New in</h3>
+        </div>
+        <div class="categories">
+          ${categoriesEl}
+        </div>
+        <div class="products">
+          ${productsEl}
+        </div>
+        <a href="/plp">Shop all</a>
+      </section>
+    `;
+  }
 }
+
+customElements.define('home-page', HomePage);
