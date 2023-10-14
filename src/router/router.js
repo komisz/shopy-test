@@ -19,15 +19,15 @@ export default class Router {
   }
 
   _handleRouting(pathname) {
-    const matchedRoute = this._matchPathToRoute(pathname);
+    const { matchedRoute, params } = this._matchPathToRoute(pathname);
 
     this.routerOutletEl.innerHTML = matchedRoute
-      ? this._getRouteTemplate(matchedRoute)
-      : this._getRouteTemplate(null);
+      ? matchedRoute.get(params)
+      : '<h1>404 - Not Found</h1>';
   }
 
   _matchPathToRoute(pathname) {
-    let params; // !: hack to be returned
+    let params = {}; // !: hack to be returned
     const matchedRoute = this.routes.find((route) => {
       const regex = new RegExp(`^${route.path.replace(/:\w+/g, '([^/]+)')}$`);
       const matches = pathname.match(regex);
@@ -43,25 +43,11 @@ export default class Router {
       return false;
     });
 
-    matchedRoute.params = params;
-
-    return matchedRoute || this._getDefaultRoute();
-  }
-
-  _getDefaultRoute() {
-    return this.routes.find((route) => route.path === '/404') || null;
+    return { matchedRoute, params };
   }
 
   _loadInitialRoute() {
     const pathname = window.location.pathname;
     this._handleRouting(pathname);
-  }
-
-  _getRouteTemplate(route) {
-    if (route && route.get) {
-      return route.get(route.params);
-    } else {
-      return '<h1>404 - Not Found</h1>';
-    }
   }
 }

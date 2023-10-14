@@ -1,88 +1,84 @@
-import { getCategories, getProducts } from '../api/index.js';
-import MultiSelect from '../components/multi-select.js';
+import { getProducts, getCategories } from '../api/index.js';
+import { router } from '../router/index.js';
 
-function handleGotoProduct(e) {
-  e.preventDefault();
-  const to = e.target.getAttribute('href');
-
-  if (!to) {
-    console.error('href not found');
-    return;
+export default class PLPPage extends HTMLElement {
+  constructor() {
+    super();
+    this.products = getProducts();
+    this.categories = getCategories();
+    this.render();
   }
 
-  router.loadRoute(to);
-}
-
-function renderProductItem(product) {
-  return `
-  <a href="/product/${product.id}" onclick="${handleGotoProduct}">
-    <div class="grid-item" id="${product.id}">
-      ${product.id}, ${product.title}, ${product.price}
-    </div>
-    </a>
-  `;
-}
-
-function createMultiSelect(key, categories) {
-  const multiSelectElement = new MultiSelect();
-  multiSelectElement.setAttribute('data-options', categories);
-  multiSelectElement.setAttribute('data-key', key);
-  return multiSelectElement;
-}
-
-export default function PLPTemplate() {
-  const products = getProducts();
-  const categories = getCategories();
-
-  function updateProducts(selectedOptions, filterKey) {
-    // Filter products based on selected options and filter key
-    const filteredProducts = products.filter((product) => {
-      return selectedOptions.includes(product[filterKey]);
-    });
-
-    // Render filtered products
-    const productsEl = filteredProducts.map(renderProductItem).join('');
-
-    // Update the product grid with filtered products
-    document.querySelector('.product-grid').innerHTML = productsEl;
-    document.querySelector('.product-count').textContent =
-      filteredProducts.length;
+  connectedCallback() {
+    this.addEventListeners();
   }
 
-  const productsEl = products.map(renderProductItem).join('');
-  const multiSelectElement = createMultiSelect('category', categories);
+  addEventListeners() {
+    this.querySelector('.product-grid').addEventListener(
+      'click',
+      this.handleProductClick
+    );
+    this.querySelector('multi-select').addEventListener(
+      'selectionChange',
+      this.handleFilterChange.bind(this)
+    );
+  }
 
-  document
-    .querySelector('main')
-    .addEventListener('selectionChange', (event) => {
-      const selectedOptions = event.detail.selectedOptions;
-      const filterKey = event.detail.filterKey;
+  handleProductClick(event) {
+    event.preventDefault();
+    router.loadRoute(event.target.getAttribute('href'));
+  }
 
-      updateProducts(selectedOptions, filterKey);
-    });
+  handleFilterChange(event) {
+    const { selectedOptions, filterKey } = event.detail;
+    const filteredProducts = this.products.filter((product) =>
+      selectedOptions.includes(product[filterKey])
+    );
+    this.updateUi(filteredProducts);
+  }
 
-  return `
-    <section class="hero">
-      <img class="hero-img" src="static/images/Frame-114.png" alt="Hero Image 1">
-      <img class="hero-img" src="static/images/Frame-125.png" alt="Hero Image 2">
-    </section>
+  renderProductItem(product) {
+    return `
+      <a href="/product/${product.id}" class="product-nav" data-product-id="${product.id}">${product.title}</a>
+    `;
+  }
 
-    <div class="spacer"></div>
+  renderProductItems(products) {
+    return products.map(this.renderProductItem).join('');
+  }
 
-    <div class="filter-bar">
-      <div class="left">
-        <p>Filter & Sort</p>
-        <p>|</p>
-        <span class="product-count">${products.length}</span>
+  updateUi(products) {
+    const productsEl = this.renderProductItems(products);
+    this.querySelector('.product-grid').innerHTML = productsEl;
+    this.querySelector('.product-count').textContent = products.length;
+  }
+
+  render() {
+    const productsEl = this.renderProductItems(this.products);
+    this.innerHTML = `
+      <section class="hero">
+        <img class="hero-img" src="static/images/Frame-114.png" alt="Hero Image 1">
+        <img class="hero-img" src="static/images/Frame-125.png" alt="Hero Image 2">
+      </section>
+
+      <div class="spacer"></div>
+
+      <div class="filter-bar">
+        <div class="left">
+          <p>Filter & Sort</p>
+          <p>|</p>
+          <span class="product-count">${this.products.length}</span>
+        </div>
+        <div class="right">
+          <multi-select data-options=${this.categories} data-key="category"></multi-select>
+        </div>
       </div>
-
-      <div class="right">
-        ${multiSelectElement.outerHTML}
-      </div>
-    </div>
 
       <div class="product-grid">
         ${productsEl}
       </div>
-  `;
+    `;
+  }
 }
+
+customElements.define('plp-page', PLPPage);

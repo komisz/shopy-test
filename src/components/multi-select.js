@@ -18,16 +18,12 @@ export default class MultiSelect extends HTMLElement {
 
   render() {
     this.innerHTML = `
-      <div>
-        <label id="selectedOptionsLabel" for="multiselect">${
-          this.filterKey
-        }</label>
-        <select id="multiselect" multiple data-key=${this.filterKey}>
-          ${this.options
-            .map((option) => `<option value=${option}>${option}</option>`)
-            .join('')}
-        </select>
-      </div>
+    <label id="selectedOptionsLabel" for="multiselect">${this.filterKey}</label>
+    <select id="multiselect" multiple data-key=${this.filterKey}>
+      ${this.options
+        .map((option) => `<option value=${option}>${option}</option>`)
+        .join('')}
+    </select>
     `;
   }
 

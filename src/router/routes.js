@@ -8,7 +8,7 @@ export default [
   },
   {
     path: '/plp',
-    get: (params) => PLP(),
+    get: () => '<plp-page></plp-page>',
   },
   {
     path: '/product/:productId',
@@ -21,9 +21,5 @@ export default [
         return '<h1>Sorry, product not found.</h1>';
       }
     },
-  },
-  {
-    path: '/404',
-    get: () => '<h1>404</h1>',
   },
 ];

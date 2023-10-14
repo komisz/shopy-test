@@ -187,10 +187,6 @@ PLP
   grid-column: span 2;
 }
 
-label {
-  background: red;
-}
-
 :root {
   --header-height: 56px;
   --offset-left: 56px;
