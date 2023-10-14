@@ -35,6 +35,7 @@ class MyHeader extends HTMLElement {
 
   render() {
     this.innerHTML = `
+    <header>
       <div class="header-ctr">
         <div class="left">
           <a class="nav-link" href="/">Home</a>
@@ -47,6 +48,7 @@ class MyHeader extends HTMLElement {
           <p>Right nav</p>
         </div>
       </div>
+      </header>
     `;
   }
 }
