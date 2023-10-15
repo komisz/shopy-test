@@ -4,13 +4,9 @@
   box-sizing: border-box;
 }
 
-body {
-  margin: 0 auto;
-  width: 100%;
-}
-
 main {
   max-width: 1440px;
+  margin: 0 auto;
 }
 
 header {
@@ -175,6 +171,7 @@ PLP
 .filter-bar > .right {
   display: flex;
   gap: 12px;
+  flex-direction: column;
 }
 
 .product-grid {
@@ -244,7 +241,7 @@ PLP
 .cart-total {
   border-top: 1px solid black;
   margin-top: auto;
-  padding-top: 10px
+  padding-top: 10px;
 }
 
 .cart-drawer.open {

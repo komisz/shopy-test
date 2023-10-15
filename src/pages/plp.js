@@ -55,7 +55,15 @@ export default class PLPPage extends HTMLElement {
         if (filterKey === 'sortOption') {
           continue;
         }
-        if (
+        if (filterKey === 'vendor' && filters.vendor.length > 0) {
+          const vendorWords = product[filterKey].split(' '); // 💡 :split vendor name into words to avoid filtering issues
+          const matches = filters.vendor.some((filterWord) =>
+            vendorWords.includes(filterWord)
+          );
+          if (!matches) {
+            return false;
+          }
+        } else if (
           filters[filterKey].length > 0 &&
           !filters[filterKey].includes(product[filterKey])
         ) {
@@ -108,6 +116,7 @@ export default class PLPPage extends HTMLElement {
         </div>
         <div class="right">
           <my-filter></my-filter>
+          <span style="color: gray"><i>you can apply multiple select options with cmd/shift + click</i></span>
         </div>
       </div>
 
