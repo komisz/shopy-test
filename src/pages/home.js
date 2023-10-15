@@ -4,12 +4,18 @@ import { router } from '../router/index.js';
 export default class HomePage extends HTMLElement {
   activeCategories = new Set();
 
-  connectedCallback() {
+  constructor() {
+    super();
+    this.glide = null;
     this.render();
+  }
+
+  connectedCallback() {
     this.querySelector('.carousel').addEventListener(
       'click',
       this.handleEventClick
     );
+    this.initializeCarousel();
   }
 
   disconnectedCallback() {
@@ -19,7 +25,7 @@ export default class HomePage extends HTMLElement {
     );
   }
 
-  renderCategories(categories) {
+  createCategories(categories) {
     return categories
       .map(
         (category) => `
@@ -29,12 +35,13 @@ export default class HomePage extends HTMLElement {
       .join('');
   }
 
-  renderCarousel(products) {
+  createCarouselItems(products) {
     return products
       .map(
         (product) => `
-      <a href="/product/${product.id}" class="product-nav" data-product-id="${product.id}">${product.title}</a>
-    `
+          <li class="glide__slide">
+            <a href="/product/${product.id}" class="product-nav" data-product-id="${product.id}">${product.title}</a>
+          </li>`
       )
       .join('');
   }
@@ -65,16 +72,36 @@ export default class HomePage extends HTMLElement {
     }
   };
 
+  initializeCarousel() {
+    const glideEl = document.querySelector('.glide');
+
+    if (glideEl) {
+      this.glide = new Glide(glideEl, {
+        type: 'carousel',
+        startAt: 0,
+        perView: 5,
+        autoplay: 1000,
+      });
+      this.glide.mount();
+    }
+  }
+
   updateUi() {
-    const productsContainer = this.querySelector('.products');
-    productsContainer.innerHTML = this.renderCarousel(
+    if (this.glide) {
+      this.glide.destroy();
+    }
+
+    const glideSlidesEl = this.querySelector('.glide__slides');
+    glideSlidesEl.innerHTML = this.createCarouselItems(
       getProductsByCategory(Array.from(this.activeCategories))
     );
+
+    this.initializeCarousel();
   }
 
   render() {
-    const categoriesEl = this.renderCategories(getCategories());
-    const productsEl = this.renderCarousel(
+    const categoriesEl = this.createCategories(getCategories());
+    const productsEl = this.createCarouselItems(
       getProductsByCategory(Array.from(this.activeCategories))
     );
 
@@ -93,9 +120,15 @@ export default class HomePage extends HTMLElement {
         <div class="categories">
           ${categoriesEl}
         </div>
-        <div class="products">
-          ${productsEl}
+
+         <div class="products glide">
+          <div class="glide__track" data-glide-el="track">
+            <ul class="glide__slides">
+              ${productsEl}
+            </ul>
+          </div>
         </div>
+
         <a href="/plp">Shop all</a>
       </section>
     `;
