@@ -1,5 +1,3 @@
-import { PLP, PDP, Home } from '../templates/index.template.js';
-
 export default [
   {
     path: '/',

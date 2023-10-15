@@ -4,10 +4,9 @@ class MyHeader extends HTMLElement {
   connectedCallback() {
     this.render();
     const links = Array.from(this.querySelectorAll('a.nav-link'));
-    const initialPath = window.location.pathname;
 
     links.forEach((link) => {
-      if (link.getAttribute('href') === initialPath) {
+      if (link.getAttribute('href') === window.location.pathname) {
         link.classList.add('active');
       }
       link.addEventListener('click', this.handleLinkClick.bind(this));

@@ -11,6 +11,7 @@ export default class Router {
     const pathname = `${pathSegments.join('/')}`;
     history.pushState({}, '', pathname);
     this._handleRouting(pathname);
+    window.scrollTo(0, 0);
   }
 
   _handlePopstate() {
@@ -24,6 +25,7 @@ export default class Router {
     this.routerOutletEl.innerHTML = matchedRoute
       ? matchedRoute.get(params)
       : '<h1>404 - Not Found</h1>';
+    window.scrollTo(0, 0);
   }
 
   _matchPathToRoute(pathname) {
