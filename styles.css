@@ -217,6 +217,34 @@ PLP
   padding: 20px;
   transition: right 0.5s ease;
   z-index: 3;
+  gap: 18px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-top {
+  display: flex;
+  align-items: center;
+  self-align: start;
+  justify-content: space-between;
+}
+#cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-total {
+  border-top: 1px solid black;
+  margin-top: auto;
+  padding-top: 10px
 }
 
 .cart-drawer.open {
@@ -230,9 +258,9 @@ PLP
 
 .close-cart-btn {
   cursor: pointer;
-  position: absolute;
-  top: 100px;
-  right: 50px;
+  /* position: absolute; */
+  /* top: 100px;
+  right: 50px; */
 }
 
 :root {
