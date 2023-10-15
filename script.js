@@ -1,8 +1,8 @@
 import { _prepareData } from './src/api/index.js';
 
-import './src/templates/home.template.js';
-import './src/templates/pdp.template.js';
-import './src/templates/plp.template.js';
+import './src/pages/home.js';
+import './src/pages/pdp.js';
+import './src/pages/plp.js';
 
 import './src/components/header.js';
 import './src/components/footer.js';
