@@ -76,7 +76,7 @@ export default class PLPPage extends HTMLElement {
     );
   }
 
-  renderProductItems(products) {
+  createProductItems(products) {
     return products
       .map(
         (product) =>
@@ -87,7 +87,7 @@ export default class PLPPage extends HTMLElement {
 
   updateUi(products) {
     this.querySelector('.product-grid').innerHTML =
-      this.renderProductItems(products);
+      this.createProductItems(products);
     this.querySelector('.product-count').textContent = products.length;
   }
 
@@ -112,7 +112,7 @@ export default class PLPPage extends HTMLElement {
       </div>
 
       <div class="product-grid">
-        ${this.renderProductItems(this.currentProducts)}
+        ${this.createProductItems(this.currentProducts)}
       </div>
     `;
   }
