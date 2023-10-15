@@ -29,11 +29,32 @@ export default class PLPPage extends HTMLElement {
     } else {
       myFilter.addEventListener('filterUpdated', this.handleFilterChange);
     }
+
+    const sortSelect = this.querySelector('#sort-select');
+    if (sortSelect) {
+      sortSelect.addEventListener('change', this.handleSortChange);
+    }
+  }
+
+  sortProducts(products, sortOption) {
+    const [sortKey, sortOrder] = sortOption.split('-');
+    return products.sort((a, b) => {
+      const aValue = String(a[sortKey]);
+      const bValue = String(b[sortKey]);
+      if (sortOrder === 'asc') {
+        return aValue.localeCompare(bValue, undefined, { numeric: true });
+      } else {
+        return bValue.localeCompare(aValue, undefined, { numeric: true });
+      }
+    });
   }
 
   filterProducts(products, filters) {
     return products.filter((product) => {
       for (const filterKey in filters) {
+        if (filterKey === 'sortOption') {
+          continue;
+        }
         if (
           filters[filterKey].length > 0 &&
           !filters[filterKey].includes(product[filterKey])
@@ -46,11 +67,14 @@ export default class PLPPage extends HTMLElement {
   }
 
   handleFilterChange(event) {
+    console.log('filter changed', event.detail);
     this.currentProducts = this.filterProducts(
       this.allProducts,
-      event.detail // filter current state
+      event.detail // 💡: filter current state
     );
-    this.updateUi(this.currentProducts);
+    this.updateUi(
+      this.sortProducts(this.currentProducts, event.detail.sortOption)
+    );
   }
 
   renderProductItems(products) {

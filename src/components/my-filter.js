@@ -4,11 +4,21 @@ import MultiSelect from './multi-select.js';
 export default class MyFilter extends HTMLElement {
   constructor() {
     super();
-    this.filters = {
+    this.sortOptions = [
+      'title-asc',
+      'title-desc',
+      'price-asc',
+      'price-desc',
+      'vendor-asc',
+      'vendor-desc',
+    ];
+    this.filterOptions = {
       category: getCategories(),
       vendor: getVendors(),
     };
-    this.currentFilterState = {};
+    this.currentFilterState = {
+      sortOption: 'title-asc',
+    };
   }
 
   connectedCallback() {
@@ -18,7 +28,7 @@ export default class MyFilter extends HTMLElement {
   }
 
   defaultFilterState() {
-    for (const filterKey in this.filters) {
+    for (const filterKey in this.filterOptions) {
       this.updateFilterState(filterKey, []);
     }
   }
@@ -34,7 +44,7 @@ export default class MyFilter extends HTMLElement {
   }
 
   addEventListeners() {
-    for (const filterKey in this.filters) {
+    for (const filterKey in this.filterOptions) {
       const multiSelect = this.querySelector(
         `multi-select[data-key="${filterKey}"]`
       );
@@ -44,6 +54,18 @@ export default class MyFilter extends HTMLElement {
         });
       }
     }
+
+    const sortEl = this.querySelector('#sort-select');
+    sortEl?.addEventListener('change', (event) => {
+      const selectedSortOption = event.target.value;
+      this.currentFilterState.sortOption = selectedSortOption;
+      this.dispatchEvent(
+        new CustomEvent('filterUpdated', {
+          bubbles: true,
+          detail: this.currentFilterState,
+        })
+      );
+    });
   }
 
   createMultiSelect(key, options) {
@@ -54,15 +76,26 @@ export default class MyFilter extends HTMLElement {
   }
 
   render() {
-    const filterEls = Object.entries(this.filters).map(([key, options]) => {
-      const multiSelectElement = this.createMultiSelect(key, options);
-      return multiSelectElement;
-    });
+    const filterEls = Object.entries(this.filterOptions).map(
+      ([key, options]) => {
+        const multiSelectElement = this.createMultiSelect(key, options);
+        return multiSelectElement;
+      }
+    );
 
     this.innerHTML = '';
     filterEls.forEach((filterEl) => {
       this.appendChild(filterEl);
     });
+
+    this.innerHTML += `
+      <label for="sort-select">Sort By:</label>
+      <select id="sort-select">
+        ${this.sortOptions
+          .map((option) => `<option value="${option}">${option}</option>`)
+          .join('')}
+      </select>
+    `;
   }
 }
 
