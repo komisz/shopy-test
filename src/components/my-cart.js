@@ -41,6 +41,7 @@ export default class ShoppingCart extends HTMLElement {
     );
 
     if (existingItem) {
+      existingItem.quantity = parseInt(existingItem.quantity);
       existingItem.quantity += parseInt(item.quantity);
     } else {
       this.items.push(item);

@@ -12,11 +12,12 @@ export default class Router {
     history.pushState({}, '', pathname);
     this._handleRouting(pathname);
     window.scrollTo(0, 0);
+    document.dispatchEvent(new Event('routeChange'));
   }
 
   _handlePopstate() {
-    const pathname = window.location.pathname;
-    this._handleRouting(pathname);
+    this._handleRouting(window.location.pathname);
+    document.dispatchEvent(new Event('routeChange'));
   }
 
   _handleRouting(pathname) {
@@ -29,7 +30,7 @@ export default class Router {
   }
 
   _matchPathToRoute(pathname) {
-    let params = {}; // !: hack to be returned
+    let params = {};
     const matchedRoute = this.routes.find((route) => {
       const regex = new RegExp(`^${route.path.replace(/:\w+/g, '([^/]+)')}$`);
       const matches = pathname.match(regex);
@@ -49,7 +50,7 @@ export default class Router {
   }
 
   _loadInitialRoute() {
-    const pathname = window.location.pathname;
-    this._handleRouting(pathname);
+    this._handleRouting(window.location.pathname);
+    document.dispatchEvent(new Event('routeChange'));
   }
 }

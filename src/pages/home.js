@@ -84,7 +84,7 @@ export default class HomePage extends HTMLElement {
         <img class="hero-img" src="static/images/Frame-114.png" />
       </section>
 
-      <div class="spacer">spacer</div>
+      <div class="spacer"></div>
 
       <section class="carousel">
         <div>

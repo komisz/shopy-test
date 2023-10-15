@@ -11,6 +11,22 @@ class MyHeader extends HTMLElement {
       }
       link.addEventListener('click', this.handleLinkClick.bind(this));
     });
+
+    document.addEventListener('routeChange', () => {
+      this.updateActiveLinks();
+    });
+  }
+
+  updateActiveLinks() {
+    this.querySelectorAll('a.nav-link').forEach((link) => {
+      link.classList.remove('active');
+    });
+
+    const currentPath = window.location.pathname;
+    const activeLink = this.querySelector(`a.nav-link[href="${currentPath}"]`);
+    if (activeLink) {
+      activeLink.classList.add('active');
+    }
   }
 
   handleLinkClick(event) {
@@ -24,12 +40,6 @@ class MyHeader extends HTMLElement {
 
     const path = target.getAttribute('href');
     router.loadRoute(path);
-
-    this.querySelectorAll('a.nav-link').forEach((link) => {
-      link.classList.remove('active');
-    });
-
-    target.classList.add('active');
   }
 
   render() {

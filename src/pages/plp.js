@@ -67,7 +67,6 @@ export default class PLPPage extends HTMLElement {
   }
 
   handleFilterChange(event) {
-    console.log('filter changed', event.detail);
     this.currentProducts = this.filterProducts(
       this.allProducts,
       event.detail // 💡: filter current state

@@ -18,8 +18,10 @@ export default class MultiSelect extends HTMLElement {
 
   render() {
     this.innerHTML = `
-    <label id="selectedOptionsLabel" for="multiselect">${this.filterKey}</label>
-    <select id="multiselect" multiple data-key=${this.filterKey}>
+    <label for="multiselect-${this.filterKey}">${this.filterKey}</label>
+    <select id="multiselect-${this.filterKey}" multiple data-key=${
+      this.filterKey
+    }>
       ${this.options
         .map((option) => `<option value=${option}>${option}</option>`)
         .join('')}
@@ -28,8 +30,8 @@ export default class MultiSelect extends HTMLElement {
   }
 
   addEventListeners() {
-    const selectEl = this.querySelector('#multiselect');
-    const selectedOptionsCountEl = this.querySelector('#selectedOptionsLabel');
+    const selectEl = this.querySelector('select');
+    const selectedOptionsCountEl = this.querySelector('label');
 
     selectEl.addEventListener('change', (e) => {
       const selectedOptions = Array.from(selectEl.selectedOptions).map(
