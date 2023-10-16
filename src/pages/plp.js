@@ -55,6 +55,12 @@ export default class PLPPage extends HTMLElement {
         if (filterKey === 'sortOption') {
           continue;
         }
+        if (filterKey === 'onSale') {
+          // ?: 💡 if filter onsale is checked
+          if (filters[filterKey]) {
+            return filters[filterKey] === product.onSale;
+          }
+        }
         if (filterKey === 'vendor' && filters.vendor.length > 0) {
           const vendorWords = product[filterKey].split(' '); // 💡 :split vendor name into words to avoid filtering issues
           const matches = filters.vendor.some((filterWord) =>
@@ -77,8 +83,10 @@ export default class PLPPage extends HTMLElement {
   handleFilterChange(event) {
     this.currentProducts = this.filterProducts(
       this.allProducts,
-      event.detail // 💡: filter current state
+      event.detail // ?: 💡 filter current state
     );
+
+    console.log(this.currentProducts);
     this.updateUi(
       this.sortProducts(this.currentProducts, event.detail.sortOption)
     );

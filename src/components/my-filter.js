@@ -16,29 +16,25 @@ export default class MyFilter extends HTMLElement {
       category: getCategories(),
       vendor: getVendors(),
     };
-    this.currentFilterState = {
+    this.filterState = {
+      category: [],
+      vendor: [],
+      onSale: false,
       sortOption: 'title-asc',
     };
   }
 
   connectedCallback() {
-    this.defaultFilterState();
     this.render();
     this.addEventListeners();
   }
 
-  defaultFilterState() {
-    for (const filterKey in this.filterOptions) {
-      this.updateFilterState(filterKey, []);
-    }
-  }
-
   updateFilterState(filterKey, selectedOptions) {
-    this.currentFilterState[filterKey] = selectedOptions;
+    this.filterState[filterKey] = selectedOptions;
     this.dispatchEvent(
       new CustomEvent('filterUpdated', {
         bubbles: true,
-        detail: this.currentFilterState,
+        detail: this.filterState,
       })
     );
   }
@@ -56,16 +52,14 @@ export default class MyFilter extends HTMLElement {
     }
 
     const sortEl = this.querySelector('#sort-select');
-    sortEl?.addEventListener('change', (event) => {
-      const selectedSortOption = event.target.value;
-      this.currentFilterState.sortOption = selectedSortOption;
-      this.dispatchEvent(
-        new CustomEvent('filterUpdated', {
-          bubbles: true,
-          detail: this.currentFilterState,
-        })
-      );
-    });
+    sortEl?.addEventListener('change', (event) =>
+      this.updateFilterState('sortOption', event.target.value)
+    );
+
+    const checkEl = this.querySelector('#onsale-checkbox');
+    checkEl?.addEventListener('change', (event) =>
+      this.updateFilterState('onSale', event.target.checked)
+    );
   }
 
   createMultiSelect(key, options) {
@@ -95,6 +89,13 @@ export default class MyFilter extends HTMLElement {
           .map((option) => `<option value="${option}">${option}</option>`)
           .join('')}
       </select>
+
+      <label for="onsale-checkbox" class="container">On sale:
+        <input type="checkbox" id="onsale-checkbox"
+          ${this.filterState.onSale ? 'checked' : ''}
+        >
+        <span class="checkmark"></span>
+      </label>
     `;
   }
 }

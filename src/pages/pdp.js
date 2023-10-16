@@ -51,7 +51,7 @@ export default class PDPPage extends HTMLElement {
     });
   }
 
-  generateOptions(options, selectedValue) {
+  createOptions(options, selectedValue) {
     return options
       .map(
         (option) =>
@@ -94,17 +94,17 @@ export default class PDPPage extends HTMLElement {
           </ul>
           <div class="product-options">
             <label for="quantity-select">Select quantity:</label>
-            <select data-key="quantity">${this.generateOptions(
+            <select data-key="quantity">${this.createOptions(
               [1, 2, 3, 4, 5, 6, 7, 8, 9],
               this.currentOptions.quantity
             )}</select>
             <label for="size-select">Select size:</label>
-            <select data-key="size">${this.generateOptions(
+            <select data-key="size">${this.createOptions(
               sizes,
               this.currentOptions.size
             )}</select>
             <label for="color-select">Select color:</label>
-            <select data-key="color">${this.generateOptions(
+            <select data-key="color">${this.createOptions(
               colors,
               this.currentOptions.color
             )}</select>

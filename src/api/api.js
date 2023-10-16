@@ -2,7 +2,7 @@ import { addItemToLocalStorage, getItemFromLocalStorage } from './storage.js';
 import {
   fetchData,
   filterNFromArrBy,
-  generateProductOptions,
+  addProductAttributes,
   lowercaseKeys,
 } from './helpers.js';
 
@@ -19,19 +19,16 @@ const mapImages = (product) => {
   };
 };
 
-const parseProducts = (data) =>
-  data.map((product) =>
-    generateProductOptions(mapImages(lowercaseKeys(product)))
-  );
-
 const _prepareData = async (filepath) => {
   try {
-    if (getProducts()?.length) {
-      console.log('Products already fetched, skipping data prep.');
-      return;
-    }
+    // if (getProducts()?.length) {
+    //   console.log('Products already fetched, skipping data prep.');
+    //   return;
+    // }
     const data = await fetchData(filepath);
-    const products = parseProducts(data);
+    const products = data.map((product, idx) =>
+      addProductAttributes(mapImages(lowercaseKeys(product)), idx)
+    );
     const categories = [...new Set(products.map((p) => p.category))];
     const vendors = [...new Set(products.map((p) => p.vendor))];
 
@@ -62,6 +59,11 @@ const getProductsByCategory = (filterCategories) => {
     : filterNFromArrBy(products, categories);
 };
 
+const getProductsOnSale = () => {
+  const products = getProducts();
+  return products.filter((p) => p.onSale);
+};
+
 const getCategories = () => getDataFromLocalStorage('categories');
 const getVendors = () => getDataFromLocalStorage('vendors');
 
@@ -70,6 +72,7 @@ export {
   getProducts,
   getProductById,
   getProductsByCategory,
+  getProductsOnSale,
   getCategories,
   getVendors,
 };

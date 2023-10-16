@@ -1,3 +1,37 @@
+const allSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+const allColors = [
+  'aliceblue',
+  'antiquewhite',
+  'aqua',
+  'aquamarine',
+  'azure',
+  'beige',
+  'bisque',
+  'black',
+  'blanchedalmond',
+  'blue',
+  'blueviolet',
+  'brown',
+  'burlywood',
+  'cadetblue',
+  'chartreuse',
+  'chocolate',
+  'coral',
+  'cornflowerblue',
+  'cornsilk',
+  'crimson',
+  'cyan',
+  'darkblue',
+  'darkcyan',
+  'darkgoldenrod',
+  'darkgray',
+  'darkgreen',
+  'darkkhaki',
+  'darkmagenta',
+  'darkolivegreen',
+  'darkorange',
+];
+
 const fetchData = async (filepath) => {
   try {
     const response = await fetch(filepath);
@@ -20,45 +54,26 @@ const getRandomItems = (items) =>
     return items.splice(randomIndex, 1)[0];
   });
 
-const generateProductOptions = (product) => {
-  const allSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
-  const allColors = [
-    'aliceblue',
-    'antiquewhite',
-    'aqua',
-    'aquamarine',
-    'azure',
-    'beige',
-    'bisque',
-    'black',
-    'blanchedalmond',
-    'blue',
-    'blueviolet',
-    'brown',
-    'burlywood',
-    'cadetblue',
-    'chartreuse',
-    'chocolate',
-    'coral',
-    'cornflowerblue',
-    'cornsilk',
-    'crimson',
-    'cyan',
-    'darkblue',
-    'darkcyan',
-    'darkgoldenrod',
-    'darkgray',
-    'darkgreen',
-    'darkkhaki',
-    'darkmagenta',
-    'darkolivegreen',
-    'darkorange',
-  ];
-
+const addProductAttributes = (product, idx) => {
   const selectedSizes = getRandomItems([...allSizes]);
   const selectedColors = getRandomItems([...allColors]);
 
-  return { ...product, sizes: selectedSizes, colors: selectedColors };
+  const updatedProduct = {
+    ...product,
+    sizes: selectedSizes,
+    colors: selectedColors,
+    onSale: false,
+  };
+
+  // ?: 💡 every 8th product is on sale with random int lower than original price
+  if (idx % 8 === 0) {
+    Object.assign(updatedProduct, {
+      onSale: true,
+      salePrice: Math.floor(Math.random() * product.price) + 1,
+    });
+  }
+
+  return updatedProduct;
 };
 
 const filterNFromArrBy = (arr = [], filters = [], n = 2) =>
@@ -69,4 +84,4 @@ const filterNFromArrBy = (arr = [], filters = [], n = 2) =>
     return [...acc, ...itemsInCategory];
   }, []);
 
-export { fetchData, lowercaseKeys, generateProductOptions, filterNFromArrBy };
+export { fetchData, lowercaseKeys, addProductAttributes, filterNFromArrBy };
