@@ -24,9 +24,13 @@ const parseProducts = (data) =>
     generateProductOptions(mapImages(lowercaseKeys(product)))
   );
 
-const _prepareData = async () => {
+const _prepareData = async (filepath) => {
   try {
-    const data = await fetchData();
+    if (getProducts()?.length) {
+      console.log('Products already fetched, skipping data prep.');
+      return;
+    }
+    const data = await fetchData(filepath);
     const products = parseProducts(data);
     const categories = [...new Set(products.map((p) => p.category))];
     const vendors = [...new Set(products.map((p) => p.vendor))];

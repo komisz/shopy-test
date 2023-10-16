@@ -1,4 +1,4 @@
-const fetchData = async (filepath = './src/api/productsSample.json') => {
+const fetchData = async (filepath) => {
   try {
     const response = await fetch(filepath);
     if (!response.ok) throw new Error('Network response was not ok');
