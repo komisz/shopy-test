@@ -1,6 +1,6 @@
-import { getProducts } from '../api/index.js';
+import { getProducts } from '../api/api.js';
 import MyFilter from '../components/my-filter.js';
-import { router } from '../router/index.js';
+import { router } from '../router/router.js';
 
 export default class PLPPage extends HTMLElement {
   constructor() {

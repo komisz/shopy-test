@@ -1,4 +1,6 @@
-export default class Router {
+import routes from './routes.js';
+
+class Router {
   constructor(routes) {
     this.routes = routes;
     this.routerOutletEl = document.querySelector('[data-router-outlet]');
@@ -54,3 +56,5 @@ export default class Router {
     document.dispatchEvent(new Event('routeChange'));
   }
 }
+
+export const router = new Router(routes);

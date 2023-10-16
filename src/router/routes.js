@@ -1,3 +1,7 @@
+import '../pages/home.js';
+import '../pages/plp.js';
+import '../pages/pdp.js';
+
 export default [
   {
     path: '/',

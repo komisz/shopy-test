@@ -1,4 +1,4 @@
-import { getCategories, getVendors } from '../api/index.js';
+import { getCategories, getVendors } from '../api/api.js';
 import MultiSelect from './multi-select.js';
 
 export default class MyFilter extends HTMLElement {

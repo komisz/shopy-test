@@ -1,5 +1,5 @@
-import { getCategories, getProductsByCategory } from '../api/index.js';
-import { router } from '../router/index.js';
+import { getCategories, getProductsByCategory } from '../api/api.js';
+import { router } from '../router/router.js';
 
 export default class HomePage extends HTMLElement {
   activeCategories = new Set();

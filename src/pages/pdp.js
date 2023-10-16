@@ -1,4 +1,4 @@
-import { getProductById } from '../api/index.js';
+import { getProductById } from '../api/api.js';
 
 export default class PDPPage extends HTMLElement {
   constructor() {

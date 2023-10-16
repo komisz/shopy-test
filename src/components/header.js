@@ -1,4 +1,4 @@
-import { router } from '../router/index.js';
+import { router } from '../router/router.js';
 
 class MyHeader extends HTMLElement {
   connectedCallback() {
