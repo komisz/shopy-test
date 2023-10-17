@@ -1,8 +1,11 @@
 import { getCategories, getVendors } from '../api/api.js';
+import { queryStringToObject } from '../api/helpers.js';
 import MultiSelect from './multi-select.js';
 
 export default class MyFilter extends HTMLElement {
-  constructor() {
+  static observedAttributes = ['key', 'options', 'default-selected'];
+
+  constructor(defaultFilterState) {
     super();
     this.sortOptions = [
       'title-asc',
@@ -16,12 +19,8 @@ export default class MyFilter extends HTMLElement {
       category: getCategories(),
       vendor: getVendors(),
     };
-    this.filterState = {
-      category: [],
-      vendor: [],
-      onSale: false,
-      sortOption: 'title-asc',
-    };
+
+    this.filterState = defaultFilterState;
   }
 
   connectedCallback() {
@@ -31,25 +30,34 @@ export default class MyFilter extends HTMLElement {
 
   updateFilterState(filterKey, selectedOptions) {
     this.filterState[filterKey] = selectedOptions;
-    this.dispatchEvent(
-      new CustomEvent('filterUpdated', {
-        bubbles: true,
-        detail: this.filterState,
-      })
-    );
+
+    this.dispatchFilterUpdatedEvent();
+  }
+
+  dispatchFilterUpdatedEvent() {
+    const event = new CustomEvent('filterUpdated', {
+      bubbles: true,
+      detail: this.filterState,
+    });
+
+    this.dispatchEvent(event);
+  }
+
+  createMultiSelect(key, options, defaultState) {
+    const selectEl = document.createElement('multi-select');
+    selectEl.setAttribute('key', key);
+    selectEl.setAttribute('options', JSON.stringify(options));
+    selectEl.setAttribute('default-selected', JSON.stringify(defaultState));
+    return selectEl;
   }
 
   addEventListeners() {
-    for (const filterKey in this.filterOptions) {
-      const multiSelect = this.querySelector(
-        `multi-select[data-key="${filterKey}"]`
-      );
-      if (multiSelect) {
-        multiSelect.addEventListener('selectionChange', (event) => {
-          this.updateFilterState(filterKey, event.detail.selectedOptions);
-        });
-      }
-    }
+    this.querySelectorAll('multi-select')?.forEach((select) => {
+      select?.addEventListener('selectionChange', (e) => {
+        const key = e.target.key;
+        this.updateFilterState(key, e.detail.selectedOptions);
+      });
+    });
 
     const sortEl = this.querySelector('#sort-select');
     sortEl?.addEventListener('change', (event) =>
@@ -62,41 +70,39 @@ export default class MyFilter extends HTMLElement {
     );
   }
 
-  createMultiSelect(key, options) {
-    const multiSelectElement = new MultiSelect();
-    multiSelectElement.setAttribute('data-options', options);
-    multiSelectElement.setAttribute('data-key', key);
-    return multiSelectElement;
-  }
-
   render() {
-    const filterEls = Object.entries(this.filterOptions).map(
-      ([key, options]) => {
-        const multiSelectElement = this.createMultiSelect(key, options);
-        return multiSelectElement;
-      }
+    const vendorSelectorEl = this.createMultiSelect(
+      'vendors',
+      this.filterOptions.vendor,
+      this.filterState.vendors
+    );
+    const categorySelectorEl = this.createMultiSelect(
+      'categories',
+      this.filterOptions.category,
+      this.filterState.categories
     );
 
-    this.innerHTML = '';
-    filterEls.forEach((filterEl) => {
-      this.appendChild(filterEl);
-    });
+    const sortOptionsEl = this.sortOptions
+      .map((option) => `<option value="${option}">${option}</option>`)
+      .join('');
 
-    this.innerHTML += `
+    const otherFilters = `
       <label for="sort-select">Sort By:</label>
       <select id="sort-select">
-        ${this.sortOptions
-          .map((option) => `<option value="${option}">${option}</option>`)
-          .join('')}
+        ${sortOptionsEl}
       </select>
 
       <label for="onsale-checkbox" class="container">On sale:
-        <input type="checkbox" id="onsale-checkbox"
-          ${this.filterState.onSale ? 'checked' : ''}
-        >
+        <input type="checkbox" id="onsale-checkbox" ${
+          this.filterState?.onSale ? 'checked' : ''
+        }>
         <span class="checkmark"></span>
       </label>
     `;
+
+    this.appendChild(vendorSelectorEl);
+    this.appendChild(categorySelectorEl);
+    this.innerHTML += otherFilters;
   }
 }
 

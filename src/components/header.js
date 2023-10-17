@@ -1,3 +1,4 @@
+import { getCategories } from '../api/api.js';
 import { router } from '../router/router.js';
 
 class MyHeader extends HTMLElement {
@@ -39,16 +40,28 @@ class MyHeader extends HTMLElement {
     }
 
     const path = target.getAttribute('href');
-    router.loadRoute(path);
+    const queryString = target.getAttribute('data-query');
+
+    router.loadRoute(path, queryString);
   }
 
   render() {
+    const categories = getCategories();
+    const categoriesEl = categories
+      .map(
+        (cat) =>
+          `<a class="nav-link" href="/plp" data-query='categories=${cat}'>
+        ${cat}
+      </a>`
+      )
+      .join('');
+
     this.innerHTML = `
     <header>
       <div class="header-ctr">
         <div class="left">
-          <a class="nav-link" href="/">Home</a>
-          <a class="nav-link" href="/plp">PLP</a>
+        <a class="nav-link" href="/plp" data-query="onSale=true">Sale</a>
+          ${categoriesEl}
         </div>
         <a href="/" style="position: relative; z-index: 120; display: flex; align-items: center; height: 100%">
           <object type="image/svg+xml" id="logo" height="32" width="106" data="../static/assets/Logo.svg" style="position: relative; z-index: -1"></object>

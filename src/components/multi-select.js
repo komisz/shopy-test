@@ -1,57 +1,58 @@
 export default class MultiSelect extends HTMLElement {
-  static get observedAttributes() {
-    return ['data-options', 'data-key'];
-  }
+  static observedAttributes = ['key', 'options', 'default-selected'];
 
   connectedCallback() {
     this.render();
-    this.addEventListeners();
+    this.addEventListener('change', this.handleSelectChange);
+  }
+
+  get key() {
+    return this.getAttribute('key');
   }
 
   get options() {
-    return this.getAttribute('data-options')?.split(',') || [];
+    return JSON.parse(this.getAttribute('options')) || [];
   }
 
-  get filterKey() {
-    return this.getAttribute('data-key') || '';
+  get defaultSelected() {
+    return JSON.parse(this.getAttribute('default-selected')) || [];
+  }
+
+  handleSelectChange(e) {
+    const selectedOptions = Array.from(e.target.selectedOptions).map(
+      (option) => option.value
+    );
+    const event = new CustomEvent('selectionChange', {
+      bubbles: true,
+      detail: {
+        selectedOptions,
+      },
+    });
+    this.dispatchEvent(event);
+    this.updateCounterLabel(selectedOptions.length);
+  }
+
+  updateCounterLabel(count) {
+    const counterLabel = count > 0 ? `${this.key}: ${count}` : this.key;
+    this.querySelector('label').innerText = counterLabel;
   }
 
   render() {
     this.innerHTML = `
-    <label for="multiselect-${this.filterKey}">${this.filterKey}</label>
-    <select id="multiselect-${this.filterKey}" multiple data-key=${
-      this.filterKey
-    }>
-      ${this.options
-        .map((option) => `<option value=${option}>${option}</option>`)
-        .join('')}
-    </select>
+      <label for="multiselect-${this.key}"></label>
+      <select id="multiselect-${this.key}" multiple data-key=${this.key}>
+        ${this.options
+          .map(
+            (option) =>
+              `<option value="${option}" ${
+                this.defaultSelected.includes(option) ? 'selected' : ''
+              }>${option}</option>`
+          )
+          .join('')}
+      </select>
     `;
-  }
 
-  addEventListeners() {
-    const selectEl = this.querySelector('select');
-    const selectedOptionsCountEl = this.querySelector('label');
-
-    selectEl.addEventListener('change', (e) => {
-      const selectedOptions = Array.from(selectEl.selectedOptions).map(
-        (o) => o.value
-      );
-
-      selectedOptionsCountEl.textContent = `${this.filterKey}${
-        ': ' + selectedOptions.length
-      }`;
-
-      const event = new CustomEvent('selectionChange', {
-        bubbles: true,
-        detail: {
-          selectedOptions,
-          filterKey: this.filterKey,
-        },
-      });
-
-      this.dispatchEvent(event);
-    });
+    this.updateCounterLabel(this.defaultSelected.length);
   }
 }
 

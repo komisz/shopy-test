@@ -1,4 +1,5 @@
 import { getProducts } from '../api/api.js';
+import { queryStringToObject } from '../api/helpers.js';
 import MyFilter from '../components/my-filter.js';
 import { router } from '../router/router.js';
 
@@ -8,7 +9,27 @@ export default class PLPPage extends HTMLElement {
     this.allProducts = getProducts();
     this.currentProducts = this.allProducts.slice();
     this.handleFilterChange = this.handleFilterChange.bind(this);
+    this.searchParams = new URL(document.location).searchParams;
+
     this.render();
+  }
+
+  // todo: pass it into my-filter
+  get filtersStateFromParams() {
+    const searchObj = queryStringToObject(this.searchParams.toString());
+
+    const filterState = {
+      onSale: !!this.searchParams.get('onSale'),
+      categories: this.searchParams.get('categories')
+        ? [this.searchParams.get('categories')]
+        : [],
+      vendors: this.searchParams.get('vendors')
+        ? [this.searchParams.get('vendors')]
+        : [],
+      sortOption: this.searchParams.get('sort') || 'title-asc',
+    };
+
+    return filterState;
   }
 
   connectedCallback() {
@@ -50,30 +71,33 @@ export default class PLPPage extends HTMLElement {
   }
 
   filterProducts(products, filters) {
+    // ?: 💡 in product attr it uses single instead of multi, so here is a dummy dictionary
+    const productKeyDictionary = {
+      vendors: 'vendor',
+      categories: 'category',
+    };
+
     return products.filter((product) => {
       for (const filterKey in filters) {
         if (filterKey === 'sortOption') {
-          continue;
+          break;
         }
-        if (filterKey === 'onSale') {
-          // ?: 💡 if filter onsale is checked
-          if (filters[filterKey]) {
-            return filters[filterKey] === product.onSale;
-          }
+
+        if (
+          filterKey === 'onSale' &&
+          filters['onSale'] && // ?: 💡 if no onSale checked than return every product
+          filters[filterKey] !== product.onSale
+        ) {
+          return false;
         }
-        if (filterKey === 'vendor' && filters.vendor.length > 0) {
-          const vendorWords = product[filterKey].split(' '); // 💡 :split vendor name into words to avoid filtering issues
-          const matches = filters.vendor.some((filterWord) =>
-            vendorWords.includes(filterWord)
+
+        if (filters[filterKey].length > 0) {
+          const matches = filters[filterKey].find(
+            (v) => v === product[productKeyDictionary[filterKey]]
           );
           if (!matches) {
             return false;
           }
-        } else if (
-          filters[filterKey].length > 0 &&
-          !filters[filterKey].includes(product[filterKey])
-        ) {
-          return false;
         }
       }
       return true;
@@ -81,15 +105,19 @@ export default class PLPPage extends HTMLElement {
   }
 
   handleFilterChange(event) {
-    this.currentProducts = this.filterProducts(
+    const filteredProducts = this.filterProducts(
       this.allProducts,
       event.detail // ?: 💡 filter current state
     );
 
-    console.log(this.currentProducts);
-    this.updateUi(
-      this.sortProducts(this.currentProducts, event.detail.sortOption)
+    const sortedProds = this.sortProducts(
+      filteredProducts,
+      event.detail.sortOption
     );
+
+    this.filteredProducts = sortedProds;
+
+    this.updateUi(sortedProds);
   }
 
   createProductItems(products) {
@@ -108,6 +136,17 @@ export default class PLPPage extends HTMLElement {
   }
 
   render() {
+    const filteredProducts = this.filterProducts(
+      this.currentProducts,
+      this.filtersStateFromParams
+    );
+    const productsEl = this.createProductItems(
+      this.sortProducts(
+        filteredProducts,
+        this.filtersStateFromParams.sortOption
+      )
+    );
+
     this.innerHTML = `
       <section class="hero">
         <img class="hero-img" src="static/images/Frame-114.png" alt="Hero Image 1">
@@ -120,18 +159,26 @@ export default class PLPPage extends HTMLElement {
         <div class="left">
           <p>Filter & Sort</p>
           <p>|</p>
-          <span class="product-count">${this.currentProducts.length}</span>
+          <span class="product-count">${filteredProducts.length}</span>
         </div>
         <div class="right">
-          <my-filter></my-filter>
           <span style="color: gray"><i>you can apply multiple select options with cmd/shift + click</i></span>
         </div>
       </div>
 
       <div class="product-grid">
-        ${this.createProductItems(this.currentProducts)}
+        ${productsEl}
       </div>
     `;
+
+    // ! todo: shaky
+    const rightEl = this.querySelector('.right');
+    if (!rightEl) {
+      console.error('right not found in PLP');
+    } else {
+      const myFilterEl = new MyFilter(this.filtersStateFromParams);
+      rightEl?.appendChild(myFilterEl);
+    }
   }
 }
 

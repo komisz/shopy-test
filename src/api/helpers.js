@@ -84,4 +84,30 @@ const filterNFromArrBy = (arr = [], filters = [], n = 2) =>
     return [...acc, ...itemsInCategory];
   }, []);
 
-export { fetchData, lowercaseKeys, addProductAttributes, filterNFromArrBy };
+function queryStringToObject(queryString) {
+  const queryParams = new URLSearchParams(queryString);
+
+  const queryObject = {};
+
+  for (const [key, value] of queryParams.entries()) {
+    if (queryObject.hasOwnProperty(key)) {
+      if (Array.isArray(queryObject[key])) {
+        queryObject[key].push(value);
+      } else {
+        queryObject[key] = [queryObject[key], value];
+      }
+    } else {
+      queryObject[key] = value;
+    }
+  }
+
+  return queryObject;
+}
+
+export {
+  fetchData,
+  lowercaseKeys,
+  addProductAttributes,
+  filterNFromArrBy,
+  queryStringToObject,
+};

@@ -9,10 +9,14 @@ class Router {
     window.addEventListener('popstate', this._handlePopstate.bind(this));
   }
 
-  loadRoute(...pathSegments) {
-    const pathname = `${pathSegments.join('/')}`;
-    history.pushState({}, '', pathname);
-    this._handleRouting(pathname);
+  loadRoute(pathname, queryString) {
+    const path = queryString ? `${pathname}?${queryString}` : pathname;
+    this._navigateToPath(path);
+  }
+
+  _navigateToPath(path) {
+    history.pushState({}, '', path);
+    this._handleRouting(window.location.pathname);
     window.scrollTo(0, 0);
     document.dispatchEvent(new Event('routeChange'));
   }
@@ -24,11 +28,7 @@ class Router {
 
   _handleRouting(pathname) {
     const { matchedRoute, params } = this._matchPathToRoute(pathname);
-
-    this.routerOutletEl.innerHTML = matchedRoute
-      ? matchedRoute.get(params)
-      : '<h1>404 - Not Found</h1>';
-    window.scrollTo(0, 0);
+    this._renderRoute(matchedRoute, params);
   }
 
   _matchPathToRoute(pathname) {
@@ -49,6 +49,13 @@ class Router {
     });
 
     return { matchedRoute, params };
+  }
+
+  _renderRoute(matchedRoute, params) {
+    this.routerOutletEl.innerHTML = matchedRoute
+      ? matchedRoute.get(params)
+      : '<h1>404 - Not Found</h1>';
+    window.scrollTo(0, 0);
   }
 
   _loadInitialRoute() {

@@ -74,7 +74,7 @@ export default class PDPPage extends HTMLElement {
   }
 
   render() {
-    const { sizes, colors, images, ...productInfo } = this.product;
+    const { sizes, colors, images, onSale, ...productInfo } = this.product;
 
     this.innerHTML = `
       <div class="pdp-ctr">
