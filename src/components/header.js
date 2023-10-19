@@ -2,74 +2,143 @@ import { getCategories } from '../api/api.js';
 import { router } from '../router/router.js';
 
 class MyHeader extends HTMLElement {
-  connectedCallback() {
+  constructor() {
+    super();
+    this.cartCounter = 0;
+    this.categories = getCategories();
+    this.isMobile = window.innerWidth <= 768;
     this.render();
-    const links = Array.from(this.querySelectorAll('a.nav-link'));
+    this.setupEventListeners();
+  }
 
-    links.forEach((link) => {
-      if (link.getAttribute('href') === window.location.pathname) {
-        link.classList.add('active');
+  connectedCallback() {
+    document.addEventListener('routeChange', this.updateActiveLinks.bind(this));
+    window.addEventListener('resize', this.handleResize.bind(this));
+  }
+
+  setupEventListeners() {
+    const links = this.querySelectorAll('a.nav-link');
+    links.forEach((link) =>
+      link.addEventListener('click', this.handleLinkClick.bind(this))
+    );
+
+    const cartEl = document.querySelector('my-cart');
+    const cartButton = this.querySelector('#cart-control');
+    if (cartEl && cartButton) {
+      cartButton.addEventListener('click', () => cartEl.toggleCart());
+    } else {
+      console.error('cart button not found');
+    }
+
+    if (this.isMobile) {
+      const hamburgerMenu = this.querySelector('#mobile-menu-button');
+      const mobileNav = this.querySelector('#mobile-nav');
+      if (hamburgerMenu && mobileNav) {
+        hamburgerMenu.addEventListener('click', () => {
+          hamburgerMenu.classList.toggle('open');
+          mobileNav.classList.toggle('open');
+        });
       }
-      link.addEventListener('click', this.handleLinkClick.bind(this));
-    });
+    }
+  }
 
-    document.addEventListener('routeChange', () => {
-      this.updateActiveLinks();
-    });
+  handleResize() {
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile !== this.isMobile) {
+      this.isMobile = isMobile;
+      this.render();
+      this.setupEventListeners();
+    }
   }
 
   updateActiveLinks() {
+    const currentPath = window.location.pathname;
     this.querySelectorAll('a.nav-link').forEach((link) => {
       link.classList.remove('active');
+      if (link.getAttribute('href') === currentPath) {
+        link.classList.add('active');
+      }
     });
-
-    const currentPath = window.location.pathname;
-    const activeLink = this.querySelector(`a.nav-link[href="${currentPath}"]`);
-    if (activeLink) {
-      activeLink.classList.add('active');
-    }
   }
 
   handleLinkClick(event) {
     event.preventDefault();
     const target = event.target.closest('a.nav-link');
+    if (target) {
+      const path = target.getAttribute('href');
+      const queryString = target.getAttribute('data-query');
+      router.loadRoute(path, queryString);
 
-    if (!target) {
+      if (this.isMobile) {
+        this.querySelector('#mobile-nav')?.classList.toggle('open');
+        this.querySelector('#mobile-menu-button')?.classList.toggle('open');
+      }
+    } else {
       console.error('href not found');
-      return;
     }
-
-    const path = target.getAttribute('href');
-    const queryString = target.getAttribute('data-query');
-
-    router.loadRoute(path, queryString);
   }
 
-  render() {
-    const categories = getCategories();
-    const categoriesEl = categories
-      .map(
-        (cat) =>
-          `<a class="nav-link" href="/plp" data-query='categories=${cat}'>
-        ${cat}
-      </a>`
-      )
+  renderCategories() {
+    return this.categories
+      .map((cat) => this.createNavLink('/plp', `categories=${cat}`, cat))
       .join('');
+  }
+
+  createNavLink(href, query, text) {
+    return `<a class="nav-link" href="${href}" data-query="${query}">${text}</a>`;
+  }
+  render() {
+    const categoryNavlinks = this.renderCategories();
+    const leftContainerContent = this.isMobile
+      ? `
+        <button id="mobile-menu-button">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+
+        <button id="search-button">
+          <object type="image/svg+xml" data="../static/assets/search.svg"></object>
+        </button>
+
+        <div id="mobile-nav">
+          ${categoryNavlinks}
+        </div>
+      `
+      : this.createNavLink('/plp', 'onSale=true', 'Sale') + categoryNavlinks;
 
     this.innerHTML = `
-    <header>
-      <div class="header-ctr">
-        <div class="left">
-        <a class="nav-link" href="/plp" data-query="onSale=true">Sale</a>
-          ${categoriesEl}
+      <header>
+        <div id="left-ctr">${leftContainerContent}</div>
+
+        <div id="logo-ctr">
+          <a class="nav-link" id="logo" href="/">
+            <object type="image/svg+xml" height="32" width="106" data="../static/assets/Logo.svg" style="pointer-events: none;"></object>
+          </a>
         </div>
-        <a href="/" style="position: relative; z-index: 120; display: flex; align-items: center; height: 100%">
-          <object type="image/svg+xml" id="logo" height="32" width="106" data="../static/assets/Logo.svg" style="position: relative; z-index: -1"></object>
-        </a>
-        <div class="right">
-          <p>Right nav</p>
+
+        <div id="right-ctr">
+          <div id="search-ctr">
+            <button id="search-button">
+              <object type="image/svg+xml" data="../static/assets/search.svg"></object>
+            </button>
+            <p>What are you looking for?</p>
+          </div>
+          <p>Stories</p>
+          <div id="controls">
+            <button id="user-control">
+              <object type="image/svg+xml" data="../static/assets/user.svg"></object>
+            </button>
+            <button id="favourite-control">
+              <object type="image/svg+xml" data="../static/assets/heart.svg"></object>
+              <span class="cart-counter" style="pointer-events: none;">13</span>
+            </button>
+            <button id="cart-control">
+              <object type="image/svg+xml" data="../static/assets/cart.svg" style="pointer-events: none;"></object>
+              <span class="cart-counter" style="pointer-events: none;">${this.cartCounter}</span>
+            </button>
+          </div>
         </div>
-      </div>
       </header>
     `;
   }

@@ -1,8 +1,20 @@
 export default class ShoppingCart extends HTMLElement {
+  // todo: remove header cart counter logic
   constructor() {
     super();
     this.items = [];
     this.render();
+
+    this.headerCartItemsCounter = null;
+  }
+
+  connectedCallback() {
+    this.headerCartItemsCounter = document
+      .querySelector('my-header')
+      ?.querySelector('.cart-counter');
+    if (!this.headerCartItemsCounter) {
+      console.error('My-cart cant find header.');
+    }
   }
 
   setupEventListeners() {
@@ -47,8 +59,10 @@ export default class ShoppingCart extends HTMLElement {
       this.items.push(item);
     }
 
+    this.headerCartItemsCounter.textContent = this.items.length;
+
     this.render(); // rendered closed
-    this.toggleCart(true); // to play the animation
+    this.toggleCart(); // to play the animation
   }
 
   removeItem(event) {
@@ -56,14 +70,19 @@ export default class ShoppingCart extends HTMLElement {
 
     if (idx !== null) {
       this.items.splice(idx, 1);
+      this.headerCartItemsCounter.textContent = this.items.length;
+
       this.render(true);
     }
   }
 
-  toggleCart(open) {
+  toggleCart() {
     const cartDrawer = this.querySelector('#cart-drawer');
     const cartOverlay = this.querySelector('#overlay');
-    if (open) {
+    if (
+      !cartDrawer?.classList.contains('open') &&
+      !cartOverlay?.classList.contains('open')
+    ) {
       setTimeout(() => {
         cartDrawer?.classList.add('open');
         cartOverlay?.classList.add('open');
