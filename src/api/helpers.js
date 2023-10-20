@@ -48,8 +48,8 @@ const lowercaseKeys = (obj) =>
     {}
   );
 
-const getRandomItems = (items) =>
-  Array.from({ length: Math.floor(Math.random() * 5) + 1 }, () => {
+const getRandomItems = (items, n = 5) =>
+  Array.from({ length: Math.floor(Math.random() * n) + 1 }, () => {
     const randomIndex = Math.floor(Math.random() * items.length);
     return items.splice(randomIndex, 1)[0];
   });
@@ -110,4 +110,5 @@ export {
   addProductAttributes,
   filterNFromArrBy,
   queryStringToObject,
+  getRandomItems,
 };
