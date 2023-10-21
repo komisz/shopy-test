@@ -13,13 +13,24 @@ class HomePage extends HTMLElement {
     this.vendors = getVendors();
     this.activeCategories = new Set();
     this.glide = null;
+    this.isMobile = window.innerWidth <= 768;
+
     this.render();
     this.handleEventClick = this.handleEventClick.bind(this);
   }
 
   connectedCallback() {
     this.addEventListener('click', this.handleEventClick);
-    this.initializeCarousel();
+    window.addEventListener('resize', this.handleResize.bind(this));
+    this.initializeCarousel(this.isMobile);
+  }
+
+  handleResize() {
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile !== this.isMobile) {
+      this.isMobile = isMobile;
+      this.updateUi();
+    }
   }
 
   disconnectedCallback() {
@@ -110,13 +121,13 @@ class HomePage extends HTMLElement {
     window.scrollTo({ top: carouselPosition, behavior: 'smooth' });
   }
 
-  initializeCarousel() {
+  initializeCarousel(isMobile = false) {
     const glideEl = this.querySelector('.glide');
     if (glideEl) {
       this.glide = new Glide(glideEl, {
         type: 'carousel',
         startAt: 0,
-        perView: 4.2,
+        perView: isMobile ? 1.6 : 4.2,
         autoplay: 2000,
         gap: 8,
       });
@@ -138,7 +149,7 @@ class HomePage extends HTMLElement {
       element.addEventListener('click', this.handleEventClick);
     });
 
-    this.initializeCarousel();
+    this.initializeCarousel(this.isMobile);
   }
 
   createHeroContent(side) {
@@ -181,11 +192,9 @@ class HomePage extends HTMLElement {
     ];
 
     const scrollButton = `
-      <div style="position:absolute; bottom: -16px; left:0; right:0; display: flex; justify-content:center; background: transparent">
         <button class="scroll">
           <object type="image/svg+xml" data="../static/assets/chevron-down.svg"></object>
-        </button>
-      </div>`;
+      </button>`;
 
     const heroContent = heroSides
       .map(this.createHeroContent.bind(this))

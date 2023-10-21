@@ -24,7 +24,7 @@ class MyFooter extends HTMLElement {
 
     this.innerHTML = `
       <footer>
-        <div class="footer top">
+        <div class="top">
 
           <div class="column">
             <div class="group center contact">
@@ -112,7 +112,7 @@ class MyFooter extends HTMLElement {
 
         </div>
 
-        <div class="footer bottom">
+        <div class="bottom">
           <object
             type="image/svg+xml"
             id="logo"
