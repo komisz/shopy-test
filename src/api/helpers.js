@@ -48,11 +48,13 @@ const lowercaseKeys = (obj) =>
     {}
   );
 
-const getRandomItems = (items, n = 5) =>
-  Array.from({ length: Math.floor(Math.random() * n) + 1 }, () => {
-    const randomIndex = Math.floor(Math.random() * items.length);
-    return items.splice(randomIndex, 1)[0];
+const getRandomItems = (items, n = 5) => {
+  const itemsCopy = [...items]; // Create a copy of the input array
+  return Array.from({ length: Math.min(n, itemsCopy.length) }, () => {
+    const randomIndex = Math.floor(Math.random() * itemsCopy.length);
+    return itemsCopy.splice(randomIndex, 1)[0];
   });
+};
 
 const addProductAttributes = (product, idx) => {
   const selectedSizes = getRandomItems([...allSizes]);

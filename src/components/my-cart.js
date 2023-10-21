@@ -96,7 +96,7 @@ export default class ShoppingCart extends HTMLElement {
   calculateTotal(products) {
     let total = 0;
     products.forEach((product) => {
-      total += parseInt(product.price) * product.quantity;
+      total += parseInt(product.salePrice || product.price) * product.quantity;
     });
     return total;
   }
@@ -110,7 +110,7 @@ export default class ShoppingCart extends HTMLElement {
                 ${item.quantity} x ${item.title} - Size: ${
             item.selectedSize
           }, Color: ${item.selectedColor} for <strong>${
-            item.price * item.quantity
+            item.salePrice || item.price * item.quantity
           }$</strong>
             </div>
             <div>

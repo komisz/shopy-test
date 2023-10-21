@@ -21,10 +21,10 @@ const mapImages = (product) => {
 
 const _prepareData = async (filepath) => {
   try {
-    // if (getProducts()?.length) {
-    //   console.log('Products already fetched, skipping data prep.');
-    //   return;
-    // }
+    if (getProducts()?.length) {
+      console.log('Products already fetched, skipping data prep.');
+      return;
+    }
     const data = await fetchData(filepath);
     const products = data.map((product, idx) =>
       addProductAttributes(mapImages(lowercaseKeys(product)), idx)

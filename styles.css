@@ -36,7 +36,7 @@ header {
   background: linear-gradient(180deg, #c3d4f4 0%, rgba(195, 212, 244, 0) 100%);
 }
 
-a.nav-link,
+header .nav-link,
 header p {
   font-size: 14px;
   font-weight: 500;
@@ -189,7 +189,7 @@ HOME
   gap: 8px;
 }
 
-#hero a {
+home-page .nav-link {
   display: flex;
   height: 40px;
   padding: 14px 16px 12px 16px;
@@ -206,6 +206,110 @@ HOME
   line-height: 120%; /* 14.4px */
   letter-spacing: 0.48px;
   white-space: nowrap;
+}
+
+.nav-link.wide {
+    padding: 17px 48px 15px 48px;
+}
+
+.product-card {
+  width: inherit;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.product-card .label-ctr {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.product-card .label {
+  background: var(--secondary-cherry-pink);
+  color: white;
+  padding: 5px 12px;
+  border-radius: 200px;
+  font-family: Roboto;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 140%; /* 15.4px */
+  letter-spacing: 0.33px;
+}
+
+.product-card > object {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.product-card .content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  align-self: stretch;
+  flex: 1;
+  white-space: nowrap;
+}
+
+.product-card .content .title {
+  color: var(--primary-offblack, #231f1e);
+  font-family: Forum;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 160%; /* 25.6px */
+  letter-spacing: 0.64px;
+}
+.product-card .content .description {
+  color: var(--functional-dark-grey, #58554c);
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%; /* 19.6px */
+  letter-spacing: 0.14px;
+}
+.product-card .content .price-ctr {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+}
+.product-card .content .price {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--primary-offblack);
+  font-family: Roboto;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.16px;
+}
+.product-card .content .price.original {
+  color: var(--secondary-cherry-pink);
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%; /* 16.8px */
+  letter-spacing: 0.12px;
+  text-decoration: line-through;
+}
+
+home-page .product-nav {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 #hero .scroll {
@@ -234,18 +338,93 @@ HOME
   opacity: 50%;
 }
 
+.products {
+  margin-bottom: 40px;
+}
+
 .carousel {
-  height: 752px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-left: var(--offset-left);
+}
+
+.glide__slide {
+  height: inherit !important; /* Make sure each slide takes 100% height of the Glide.js container */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.glide__arrows {
+  display: flex;
+  justify-content: flex-end;
+  position: absolute;
+  right: 0;
+}
+
+.glide__arrow {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--secondary-peach-orange);
+  color: var(--primary-offblack);
+  padding: 4px;
+  cursor: pointer;
+}
+
+.glide__arrow:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.glide__arrow:last-child {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.product-card img {
+  object-fit: cover;
+  max-height: 435px;
+  height: 30vw;
+}
+
+.carousel h3 {
+  color: var(--primary-offblack);
+  text-align: center;
+  font-family: Forum;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%; /* 44.8px */
+  letter-spacing: 1.28px;
+}
+
+.carousel .category-button {
+  color: var(--primary-offblack);
+  text-align: center;
+  font-family: Roboto;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 140%; /* 22.4px */
+  letter-spacing: 0.16px;
+  background: none;
+  border-bottom: 1px solid transparent;
+  cursor: pointer;
+  padding: 5px 0;
+}
+.carousel button.active {
+  border-color: var(--primary-offblack);
 }
 
 .categories {
   display: flex;
   justify-content: center;
-  width: 660px;
   gap: 32px;
+  margin-top: 16px;
+  margin-bottom: 40px;
+  margin-right: 56px;
+  position: relative;
 }
 
 /*
@@ -375,7 +554,7 @@ PLP
 }
 
 .cart-total {
-  border-top: 1px solid black;
+  border-top: 1px solid var(--primary-offblack);
   margin-top: auto;
   padding-top: 10px;
 }
@@ -439,6 +618,7 @@ PLP
   --secondary-mellow-yellow: #fcf6c3;
   --secondary-peach-orange: #f8e7dc;
   --secondary-mellow-yellow-rgba: rgba(252, 246, 195, 0.6);
+  --secondary-cherry-pink: #b5046d;
 }
 
 @media screen and (max-width: 768px) {
@@ -491,12 +671,12 @@ PLP
     gap: 8px;
   }
 
-  a.nav-link {
+  header .nav-link {
     color: white;
   }
 
   #mobile-nav {
-    background: black;
+    background: var(--primary-offblack);
     position: absolute;
     width: 0vw;
     height: 100vh;
