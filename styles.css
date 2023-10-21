@@ -112,6 +112,40 @@ footer {
   align-items: center;
 }
 
+footer .accordion-minus,
+footer .accordion-plus {
+  display: none;
+}
+
+.accordion-minus {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 16px;
+  height: 1px;
+  background: black;
+}
+.accordion-plus {
+  position: absolute;
+  right: 0;
+  top: 35%;
+  font-size: 16px;
+}
+
+footer button {
+  display: none;
+}
+
+footer h3 {
+  color: var(--primary-offblack, #231f1e);
+  font-family: Forum;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 160%; /* 25.6px */
+  letter-spacing: 0.64px;
+}
+
 footer > .top {
   width: 100%;
   display: grid;
@@ -119,19 +153,74 @@ footer > .top {
   grid-gap: 8px;
 }
 
-footer > .bottom {
-  margin-top: auto;
-  margin-bottom: 24px;
+footer p {
+  color: var(--primary-offblack, #231f1e);
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%; /* 19.6px */
+  letter-spacing: 0.14px;
 }
 
-.footer-join {
+footer p.strong {
+  font-weight: 500;
+}
+
+footer .line-group {
+  display: flex;
+  padding: 4px 12px 4px 8px;
+  align-items: center;
+  gap: 4px;
+}
+
+footer .column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  font-weight: 500;
+}
+
+footer .column:first-child {
+  gap: 32px;
+  font-weight: 400;
+}
+
+footer .column:last-child {
+  align-items: flex-end;
   text-align: right;
 }
 
-footer > .copyright {
+footer .column .group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+footer .column:first-child .group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  align-self: stretch;
+}
+
+footer .bottom {
+  margin-top: auto;
+  text-align: center;
+}
+
+footer .copyright {
+  color: #000;
+  font-family: Roboto;
   font-size: 10px;
-  line-height: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 120%; /* 12px */
   letter-spacing: 0.1px;
+  margin-top: 24px;
 }
 
 /*
@@ -209,7 +298,7 @@ home-page .nav-link {
 }
 
 .nav-link.wide {
-    padding: 17px 48px 15px 48px;
+  padding: 17px 48px 15px 48px;
 }
 
 .product-card {
@@ -744,5 +833,148 @@ PLP
 
   #hero .content {
     width: 80%;
+  }
+
+  footer {
+    height: auto;
+    padding: 96px 32px 0px 32px;
+    background: linear-gradient(
+      180deg,
+      rgba(195, 212, 244, 0) 0%,
+      #c3d4f4 17.19%,
+      #f8e7dc 62.5%,
+      #fcf6c3 100%
+    );
+  }
+
+  footer .column.join {
+    text-align: center;
+    display: flex;
+    padding: 0px 24px;
+    align-items: center;
+    gap: 12px;
+    align-self: stretch;
+    padding-bottom: 40px;
+  }
+
+  footer .column.join p {
+    text-align: center;
+    font-weight: 400;
+    margin-bottom: 8px;
+  }
+
+  footer .column.join h3 {
+    border-top: none;
+    text-align: center;
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 130%; /* 36.4px */
+    letter-spacing: 1.12px;
+    padding: 0;
+  }
+
+  footer .column {
+    gap: 0px;
+  }
+
+  footer button {
+    display: flex;
+    height: 40px;
+    padding: 14px 16px 12px 16px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    border-radius: 8px;
+    background: var(--primary-offblack);
+    color: var(--primary-offwhite, #fff);
+    font-family: Forum;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 120%; /* 14.4px */
+    letter-spacing: 0.48px;
+  }
+
+  footer #butterfly,
+  footer #shop > .group,
+  footer #care > .group {
+    display: none;
+  }
+
+  footer #shop {
+    margin-bottom: 40px;
+  }
+
+  footer #shop > h3 {
+    border-bottom: 1px solid var(--primary-offblack);
+  }
+
+  footer .column .group {
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  footer .column .group.contact > div {
+    flex-direction: row !important;
+  }
+
+  footer .column .group.center {
+    text-align: center;
+    align-items: center;
+    gap: 16px;
+  }
+
+  footer .column .group.center h3 {
+    border: none;
+    text-align: center;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%; /* 24px */
+    letter-spacing: 0.64px;
+    padding: 0;
+  }
+
+  footer .column .group.center > div {
+    align-self: center !important;
+  }
+
+  footer h3 {
+    color: var(--primary-offblack, #231f1e);
+    font-family: Forum;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 120%; /* 18px */
+    letter-spacing: 0.6px;
+    padding: 24px 0;
+    border-top: 1px solid var(--primary-offblack);
+    width: 100%;
+  }
+
+  footer p {
+    color: var(--primary-offblack, #231f1e);
+    font-family: Roboto;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 140%; /* 22.4px */
+    letter-spacing: 0.16px;
+  }
+
+  footer > .top {
+    width: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0px;
+  }
+
+  footer .bottom {
+    display: none;
+  }
+
+  footer .accordion-minus,
+  footer .accordion-plus {
+    display: block;
   }
 }

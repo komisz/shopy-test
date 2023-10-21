@@ -117,7 +117,7 @@ class HomePage extends HTMLElement {
         type: 'carousel',
         startAt: 0,
         perView: 4.2,
-        autoplay: 0,
+        autoplay: 2000,
         gap: 8,
       });
       this.glide.mount();
