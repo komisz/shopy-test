@@ -122,7 +122,7 @@ footer .accordion-plus {
   right: 0;
   top: 50%;
   width: 16px;
-  height: .5px;
+  height: 0.5px;
   background: black;
 }
 .accordion-plus {
@@ -415,7 +415,7 @@ home-page .product-nav {
   position: absolute;
   bottom: 0;
   left: 50%;
-  transform: translate(-16px, 12px)
+  transform: translate(-16px, 12px);
 }
 
 #hero .scroll > object {
@@ -585,11 +585,10 @@ PLP
 }
 
 .product-grid {
-  padding: 0 var(--offset-left);
+  margin: 0 var(--offset-left);
   display: grid;
-  grid-gap: 8px;
-  grid-template-columns: repeat(auto-fit, minmax(323px, 1fr));
-  grid-template-rows: repeat(auto, minmax(523px, 664px));
+  grid-template-columns: repeat(auto-fill, minmax(326px, 1fr));
+  grid-gap: 80px 8px;
 }
 
 .grid-item {
@@ -667,6 +666,20 @@ PLP
   cursor: pointer;
 }
 
+.more {
+  color: white;
+  background: var(--primary-offblack);
+  display: flex;
+  height: 56px;
+  padding: 17px 48px 15px 48px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 12px;
+  background: var(--primary-offblack, #231f1e);
+  margin: 0 auto;
+}
+
 /* MOBILE MENU */
 
 #mobile-menu-button {
@@ -721,10 +734,6 @@ PLP
     --header-height: 56px;
     --offset-left: 12px;
     --offset-right: 10px;
-  }
-
-  .product-grid {
-    grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
   }
 
   .grid-item.collection-item {
@@ -921,7 +930,7 @@ PLP
   }
 
   footer #shop > h3 {
-    border-bottom: .5px solid var(--primary-offblack);
+    border-bottom: 0.5px solid var(--primary-offblack);
   }
 
   footer .column .group {
@@ -963,12 +972,12 @@ PLP
     line-height: 120%; /* 18px */
     letter-spacing: 0.6px;
     padding: 24px 0;
-    border-top: .5px solid var(--primary-offblack);
+    border-top: 0.5px solid var(--primary-offblack);
     width: 100%;
   }
 
   footer #shop {
-    border-bottom: .5px solid var(--primary-offblack);
+    border-bottom: 0.5px solid var(--primary-offblack);
   }
 
   footer p {
@@ -1000,5 +1009,10 @@ PLP
   .product-card img {
     object-fit: cover;
     height: 60vw;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+    grid-gap: 32px 4px;
   }
 }

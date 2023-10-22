@@ -106,6 +106,11 @@ function queryStringToObject(queryString) {
   return queryObject;
 }
 
+const sliceArrayIntoChunks = (array, chunkLength) =>
+  Array.from({ length: Math.ceil(array.length / chunkLength) }, (_, index) =>
+    array.slice(index * chunkLength, (index + 1) * chunkLength)
+  );
+
 export {
   fetchData,
   lowercaseKeys,
@@ -113,4 +118,5 @@ export {
   filterNFromArrBy,
   queryStringToObject,
   getRandomItems,
+  sliceArrayIntoChunks,
 };

@@ -4,6 +4,7 @@ import {
   filterNFromArrBy,
   addProductAttributes,
   lowercaseKeys,
+  sliceArrayIntoChunks,
 } from './helpers.js';
 
 const mapImages = (product) => {
@@ -48,6 +49,16 @@ const getDataFromLocalStorage = (key) => {
 };
 
 const getProducts = () => getDataFromLocalStorage('products');
+
+const paginateProducts = (products) => {
+  const chunks = sliceArrayIntoChunks(products, 24);
+  return {
+    data: chunks,
+    totalItems: products.length,
+    totalChunks: chunks.length,
+  };
+};
+
 const getProductById = (productId) =>
   getProducts().find((p) => p.id === productId);
 
@@ -72,6 +83,7 @@ export {
   getProducts,
   getProductById,
   getProductsByCategory,
+  paginateProducts,
   getProductsOnSale,
   getCategories,
   getVendors,

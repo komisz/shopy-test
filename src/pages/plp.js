@@ -1,5 +1,4 @@
-import { getProducts } from '../api/api.js';
-import { queryStringToObject } from '../api/helpers.js';
+import { getProducts, paginateProducts } from '../api/api.js';
 import MyFilter from '../components/my-filter.js';
 import { router } from '../router/router.js';
 
@@ -7,32 +6,33 @@ export default class PLPPage extends HTMLElement {
   constructor() {
     super();
     this.allProducts = getProducts();
-    this.currentProducts = this.allProducts.slice();
-    this.handleFilterChange = this.handleFilterChange.bind(this);
+    this.paginatedProducts = paginateProducts(this.allProducts.slice());
+    this.currentIndex = 0;
+    this.currentProducts = this.paginatedProducts.data[this.currentIndex];
     this.searchParams = new URL(document.location).searchParams;
 
     this.render();
   }
 
-  // todo: pass it into my-filter
   get filtersStateFromParams() {
-    const searchObj = queryStringToObject(this.searchParams.toString());
-
     const filterState = {
-      onSale: !!this.searchParams.get('onSale'),
-      categories: this.searchParams.get('categories')
-        ? [this.searchParams.get('categories')]
+      onSale: !!this.searchParams?.get('onSale'),
+      categories: this.searchParams?.get('categories')
+        ? [this.searchParams?.get('categories')]
         : [],
-      vendors: this.searchParams.get('vendors')
-        ? [this.searchParams.get('vendors')]
+      vendors: this.searchParams?.get('vendors')
+        ? [this.searchParams?.get('vendors')]
         : [],
-      sortOption: this.searchParams.get('sort') || 'title-asc',
+      sortOption: this.searchParams?.get('sort') || 'title-asc',
     };
 
     return filterState;
   }
 
   connectedCallback() {
+    this.productGrid = this.querySelector('.product-grid');
+    this.productCount = this.querySelector('.product-count');
+    this.pageCounter = this.querySelector('.page-counter');
     this.addEventListeners();
   }
 
@@ -42,36 +42,49 @@ export default class PLPPage extends HTMLElement {
         event.preventDefault();
         router.loadRoute(event.target.getAttribute('href'));
       }
+      if (event.target.classList.contains('more')) {
+        event.preventDefault();
+        this.loadMoreProducts();
+      }
     });
 
     const myFilter = this.querySelector('my-filter');
-    if (!myFilter) {
-      console.error('Missing my-filter');
-    } else {
-      myFilter.addEventListener('filterUpdated', this.handleFilterChange);
+    if (myFilter) {
+      myFilter.addEventListener(
+        'filterUpdated',
+        this.handleFilterChange.bind(this)
+      );
     }
 
     const sortSelect = this.querySelector('#sort-select');
     if (sortSelect) {
-      sortSelect.addEventListener('change', this.handleSortChange);
+      sortSelect.addEventListener('change', this.handleSortChange.bind(this));
     }
   }
 
-  sortProducts(products, sortOption) {
-    const [sortKey, sortOrder] = sortOption.split('-');
-    return products.sort((a, b) => {
-      const aValue = String(a[sortKey]);
-      const bValue = String(b[sortKey]);
-      if (sortOrder === 'asc') {
-        return aValue.localeCompare(bValue, undefined, { numeric: true });
-      } else {
-        return bValue.localeCompare(aValue, undefined, { numeric: true });
-      }
-    });
+  handleFilterChange(event) {
+    const filters = event.detail;
+    const filteredProducts = this.filterProducts(this.allProducts, filters);
+    const sortedProducts = this.sortArr(filteredProducts, filters.sortOption);
+    this.paginatedProducts = paginateProducts(sortedProducts);
+    this.currentProducts = this.paginatedProducts.data[0];
+    this.updateUi();
+  }
+
+  handleSortChange(event) {
+    const sortOption = event.target.value;
+    const sortedProducts = this.sortArr(
+      this.paginatedProducts.data.flat(),
+      sortOption
+    );
+
+    const pag = paginateProducts(sortedProducts);
+    this.paginatedProducts = pag;
+    this.currentProducts = pag.data[0];
+    this.updateUi();
   }
 
   filterProducts(products, filters) {
-    // ?: 💡 in product attr it uses single instead of multi, so here is a dummy dictionary
     const productKeyDictionary = {
       vendors: 'vendor',
       categories: 'category',
@@ -85,7 +98,7 @@ export default class PLPPage extends HTMLElement {
 
         if (
           filterKey === 'onSale' &&
-          filters['onSale'] && // ?: 💡 if no onSale checked than return every product
+          filters['onSale'] &&
           filters[filterKey] !== product.onSale
         ) {
           return false;
@@ -104,62 +117,92 @@ export default class PLPPage extends HTMLElement {
     });
   }
 
-  handleFilterChange(event) {
-    const filteredProducts = this.filterProducts(
-      this.allProducts,
-      event.detail // ?: 💡 filter current state
-    );
+  sortArr(arr, sortOption) {
+    const [sortKey, sortOrder] = sortOption.split('-');
+    return arr.sort((a, b) => {
+      const aValue = String(a[sortKey]);
+      const bValue = String(b[sortKey]);
+      if (sortOrder === 'asc') {
+        return aValue.localeCompare(bValue, undefined, { numeric: true });
+      } else {
+        return bValue.localeCompare(aValue, undefined, { numeric: true });
+      }
+    });
+  }
 
-    const sortedProds = this.sortProducts(
-      filteredProducts,
-      event.detail.sortOption
-    );
+  loadMoreProducts() {
+    if (this.currentIndex + 1 < this.paginatedProducts.totalChunks) {
+      this.currentIndex += 1;
 
-    this.filteredProducts = sortedProds;
+      const nextProducts = this.paginatedProducts.data[this.currentIndex];
 
-    this.updateUi(sortedProds);
+      this.currentProducts = [...this.currentProducts, ...nextProducts];
+      this.productGrid.innerHTML += this.createProductItems(nextProducts);
+      this.pageCounter.textContent = `${this.currentProducts.length} / ${this.paginatedProducts.totalItems} products`;
+    }
+  }
+
+  updateUi() {
+    const productsEl = this.createProductItems(this.currentProducts);
+    this.productGrid.innerHTML = productsEl;
+
+    this.productCount.textContent = this.paginatedProducts.totalItems;
+    this.pageCounter.textContent = `${this.currentProducts.length} / ${this.paginatedProducts.totalItems} products`;
   }
 
   createProductItems(products) {
+    const heartIcon = `<object type="image/svg+xml" width="32" height="32" data="../static/assets/heart.svg"></object>`;
     return products
       .map(
-        (product) =>
-          `<a href="/product/${product.id}" class="product-nav" data-product-id="${product.id}">${product.title}</a>`
+        ({ id, title, images, vendor, onSale, price, salePrice }) => `
+    <a href="/product/${id}" class="product-nav" data-product-id="${id}">
+        <div class="product-card">
+          <img src='${images[0]}'></img>
+          ${heartIcon}
+          <div class="label-ctr">
+            ${
+              onSale
+                ? `<span class="label">${Math.ceil(
+                    ((price - salePrice) / price) * -100
+                  )}%</span>`
+                : ''
+            }
+          </div>
+          <div class="content">
+            <div>
+              <p class="title">${title}</p>
+              <p class="description">${vendor}</p>
+            </div>
+            <div class="price-ctr">
+              ${
+                onSale
+                  ? `<p class="price original"><strong>€ ${price},00</strong></p>`
+                  : ''
+              }
+              <p class="price"><strong>€ ${
+                onSale ? salePrice : price
+              },00</strong></p>
+            </div>
+          </div>
+        </div>
+        </a>`
       )
       .join('');
   }
 
-  updateUi(products) {
-    this.querySelector('.product-grid').innerHTML =
-      this.createProductItems(products);
-    this.querySelector('.product-count').textContent = products.length;
-  }
-
   render() {
-    const filteredProducts = this.filterProducts(
-      this.currentProducts,
-      this.filtersStateFromParams
-    );
-    const productsEl = this.createProductItems(
-      this.sortProducts(
-        filteredProducts,
-        this.filtersStateFromParams.sortOption
-      )
-    );
-
+    const productsEl = this.createProductItems(this.currentProducts);
     this.innerHTML = `
-      <section class="hero">
-        <img class="hero-img" src="static/images/Frame-114.png" alt="Hero Image 1">
-        <img class="hero-img" src="static/images/Frame-125.png" alt="Hero Image 2">
+      <section id="hero">
+        <!-- Your hero content here -->
       </section>
 
       <div class="spacer"></div>
-
       <div class="filter-bar">
         <div class="left">
           <p>Filter & Sort</p>
           <p>|</p>
-          <span class="product-count">${filteredProducts.length}</span>
+          <span class="product-count">${this.paginatedProducts.totalItems}</span>
         </div>
         <div class="right">
           <span style="color: gray"><i>you can apply multiple select options with cmd/shift + click</i></span>
@@ -169,15 +212,19 @@ export default class PLPPage extends HTMLElement {
       <div class="product-grid">
         ${productsEl}
       </div>
+      <div class="spacer"></div>
+      <div class="page-counter" style="text-align: center; margin-bottom: 32px">
+        ${this.currentProducts.length} / ${this.paginatedProducts.totalItems} products
+      </div>
+      <div>
+        <button class="more">Load more</button>
+      </div>
     `;
 
-    // ! todo: shaky
     const rightEl = this.querySelector('.right');
-    if (!rightEl) {
-      console.error('right not found in PLP');
-    } else {
+    if (rightEl) {
       const myFilterEl = new MyFilter(this.filtersStateFromParams);
-      rightEl?.appendChild(myFilterEl);
+      rightEl.appendChild(myFilterEl);
     }
   }
 }
