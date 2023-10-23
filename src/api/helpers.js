@@ -111,6 +111,13 @@ const sliceArrayIntoChunks = (array, chunkLength) =>
     array.slice(index * chunkLength, (index + 1) * chunkLength)
   );
 
+function capitalizeFirstLetter(str) {
+  if (typeof str !== 'string') {
+    return '';
+  }
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
 export {
   fetchData,
   lowercaseKeys,
@@ -119,4 +126,5 @@ export {
   queryStringToObject,
   getRandomItems,
   sliceArrayIntoChunks,
+  capitalizeFirstLetter,
 };

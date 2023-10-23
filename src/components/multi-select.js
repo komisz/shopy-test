@@ -1,9 +1,11 @@
+import { capitalizeFirstLetter } from '../api/helpers.js';
+
 export default class MultiSelect extends HTMLElement {
   static observedAttributes = ['key', 'options', 'default-selected'];
 
   connectedCallback() {
     this.render();
-    this.addEventListener('change', this.handleSelectChange);
+    this.addEventListener('change', this.handleSelectChange.bind(this));
   }
 
   get key() {
@@ -24,23 +26,28 @@ export default class MultiSelect extends HTMLElement {
     );
     const event = new CustomEvent('selectionChange', {
       bubbles: true,
-      detail: {
-        selectedOptions,
-      },
+      detail: { selectedOptions },
     });
     this.dispatchEvent(event);
     this.updateCounterLabel(selectedOptions.length);
   }
 
   updateCounterLabel(count) {
-    const counterLabel = count > 0 ? `${this.key}: ${count}` : this.key;
-    this.querySelector('label').innerText = counterLabel;
+    this.querySelector('label span').innerText = count;
   }
 
   render() {
+    const label = capitalizeFirstLetter(this.key);
     this.innerHTML = `
-      <label for="multiselect-${this.key}"></label>
-      <select id="multiselect-${this.key}" multiple data-key=${this.key}>
+      <label for="multiselect-${this.key}">
+        <div class="label-ctr">
+          <p>${label} &nbsp;</p>
+          <span>${this.defaultSelected.length}</span>
+        </div>
+      </label>
+      <select id="multiselect-${this.key}" multiple data-key=${
+      this.key
+    } style="display:none">
         ${this.options
           .map(
             (option) =>

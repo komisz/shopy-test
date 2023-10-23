@@ -1,11 +1,8 @@
 import { getCategories, getVendors } from '../api/api.js';
-import { queryStringToObject } from '../api/helpers.js';
 import MultiSelect from './multi-select.js';
 
 export default class MyFilter extends HTMLElement {
-  static observedAttributes = ['key', 'options', 'default-selected'];
-
-  constructor(defaultFilterState) {
+  constructor(defaultFilterState, productCount) {
     super();
     this.sortOptions = [
       'title-asc',
@@ -19,18 +16,19 @@ export default class MyFilter extends HTMLElement {
       category: getCategories(),
       vendor: getVendors(),
     };
-
     this.filterState = defaultFilterState;
+    this.productCount = productCount;
+    this.isMobile = window.innerWidth <= 768;
+    this.render();
   }
 
   connectedCallback() {
-    this.render();
+    window.addEventListener('resize', this.handleResize.bind(this));
     this.addEventListeners();
   }
 
   updateFilterState(filterKey, selectedOptions) {
     this.filterState[filterKey] = selectedOptions;
-
     this.dispatchFilterUpdatedEvent();
   }
 
@@ -39,7 +37,6 @@ export default class MyFilter extends HTMLElement {
       bubbles: true,
       detail: this.filterState,
     });
-
     this.dispatchEvent(event);
   }
 
@@ -51,26 +48,54 @@ export default class MyFilter extends HTMLElement {
     return selectEl;
   }
 
+  handleToggleOpen() {
+    const elements = [
+      ...this.querySelectorAll('select'),
+      ...this.querySelectorAll('input'),
+    ];
+    elements.forEach(
+      (el) =>
+        (el.style.display =
+          el.style.display === 'none' ? 'inline-block' : 'none')
+    );
+  }
+
   addEventListeners() {
-    this.querySelectorAll('multi-select')?.forEach((select) => {
+    this.addEventListener('click', (e) => {
+      if (!e.target.matches('input') && !e.target.matches('select')) {
+        e.preventDefault();
+        this.handleToggleOpen();
+      }
+    });
+
+    this.querySelectorAll('multi-select').forEach((select) => {
       select?.addEventListener('selectionChange', (e) => {
-        const key = e.target.key;
+        const key = e.target.getAttribute('key');
         this.updateFilterState(key, e.detail.selectedOptions);
       });
     });
 
-    const sortEl = this.querySelector('#sort-select');
-    sortEl?.addEventListener('change', (event) =>
+    this.querySelector('#sort-select')?.addEventListener('change', (event) =>
       this.updateFilterState('sortOption', event.target.value)
     );
 
-    const checkEl = this.querySelector('#onsale-checkbox');
-    checkEl?.addEventListener('change', (event) =>
-      this.updateFilterState('onSale', event.target.checked)
+    this.querySelector('#onsale-checkbox')?.addEventListener(
+      'change',
+      (event) => this.updateFilterState('onSale', event.target.checked)
     );
   }
 
+  handleResize() {
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile !== this.isMobile) {
+      this.isMobile = isMobile;
+      this.render();
+      this.addEventListeners();
+    }
+  }
+
   render() {
+    const filterIcon = `<object type="image/svg+xml" width="24" height="24" data="../static/assets/filter.svg"></object>`;
     const vendorSelectorEl = this.createMultiSelect(
       'vendors',
       this.filterOptions.vendor,
@@ -81,28 +106,33 @@ export default class MyFilter extends HTMLElement {
       this.filterOptions.category,
       this.filterState.categories
     );
-
     const sortOptionsEl = this.sortOptions
       .map((option) => `<option value="${option}">${option}</option>`)
       .join('');
 
     const otherFilters = `
-      <label for="sort-select">Sort By:</label>
-      <select id="sort-select">
-        ${sortOptionsEl}
-      </select>
-
-      <label for="onsale-checkbox" class="container">On sale:
+      <div style="position:relative">
+        <label for="sort-select">Sort by ${this.filterState.sortOption}</label>
+        <select id="sort-select" style="display:none">${sortOptionsEl}</select>
+      </div>
+      <div style="position:relative">
+        <label for="onsale-checkbox" style="pointer-events: none;">On sale</label>
         <input type="checkbox" id="onsale-checkbox" ${
           this.filterState?.onSale ? 'checked' : ''
-        }>
+        } style="display:none">
         <span class="checkmark"></span>
-      </label>
+      </div>
     `;
 
-    this.appendChild(vendorSelectorEl);
-    this.appendChild(categorySelectorEl);
-    this.innerHTML += otherFilters;
+    this.innerHTML = this.isMobile
+      ? `<div class="left"><span class="product-count">${
+          this.productCount
+        } items</span></div>
+         <div class="right"><button type="button" id="toggle">${filterIcon}</button><p>Filter & Sort</p><span>${
+          this.filterState.vendors.length + this.filterState.categories.length
+        }</span></div>`
+      : `<div class="left"><button type="button" id="toggle">${filterIcon}</button><p>Filter & Sort</p><p>|</p><span class="product-count">${this.productCount} items</span></div>
+         <div class="right">${vendorSelectorEl.outerHTML}${categorySelectorEl.outerHTML}${otherFilters}</div>`;
   }
 }
 

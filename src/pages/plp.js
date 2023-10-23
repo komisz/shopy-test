@@ -1,17 +1,25 @@
-import { getProducts, paginateProducts } from '../api/api.js';
+import { getCategories, getProducts, paginateProducts } from '../api/api.js';
 import MyFilter from '../components/my-filter.js';
+import { createProductCard } from '../components/createProductCard.js';
 import { router } from '../router/router.js';
 
 export default class PLPPage extends HTMLElement {
   constructor() {
     super();
+    this.searchParams = new URL(document.location).searchParams;
     this.allProducts = getProducts();
-    this.paginatedProducts = paginateProducts(this.allProducts.slice());
+    this.isMobile = window.innerWidth <= 768;
+
+    const filteredProducts = this.filterProducts(
+      this.allProducts,
+      this.filtersStateFromParams
+    );
+    this.paginatedProducts = paginateProducts(filteredProducts.slice());
     this.currentIndex = 0;
     this.currentProducts = this.paginatedProducts.data[this.currentIndex];
-    this.searchParams = new URL(document.location).searchParams;
 
     this.render();
+    this.addEventListeners();
   }
 
   get filtersStateFromParams() {
@@ -33,10 +41,19 @@ export default class PLPPage extends HTMLElement {
     this.productGrid = this.querySelector('.product-grid');
     this.productCount = this.querySelector('.product-count');
     this.pageCounter = this.querySelector('.page-counter');
+
+    const myFilterEl = new MyFilter(
+      this.filtersStateFromParams,
+      this.paginatedProducts.totalItems
+    );
+    this.insertBefore(myFilterEl, this.children[2]);
+
     this.addEventListeners();
   }
 
   addEventListeners() {
+    window.addEventListener('resize', this.handleResize.bind(this));
+
     this.addEventListener('click', (event) => {
       if (event.target.classList.contains('product-nav')) {
         event.preventDefault();
@@ -59,6 +76,20 @@ export default class PLPPage extends HTMLElement {
     const sortSelect = this.querySelector('#sort-select');
     if (sortSelect) {
       sortSelect.addEventListener('change', this.handleSortChange.bind(this));
+    }
+
+    const scrollButton = this.querySelector('.scroll');
+    if (scrollButton) {
+      scrollButton.addEventListener('click', this.handleScrollClick.bind(this));
+    }
+  }
+
+  handleResize() {
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile !== this.isMobile) {
+      this.isMobile = isMobile;
+      this.render();
+      this.addEventListeners();
     }
   }
 
@@ -143,89 +174,75 @@ export default class PLPPage extends HTMLElement {
   }
 
   updateUi() {
+    this.currentIndex = 0;
+
+    const productCount = this.querySelector('.product-count');
     const productsEl = this.createProductItems(this.currentProducts);
     this.productGrid.innerHTML = productsEl;
+    productCount.textContent = this.paginatedProducts.totalItems + ' items ';
+    this.pageCounter.textContent = this.currentProducts?.length
+      ? `${this.currentProducts.length} / ${this.paginatedProducts.totalItems} products`
+      : null;
+  }
 
-    this.productCount.textContent = this.paginatedProducts.totalItems;
-    this.pageCounter.textContent = `${this.currentProducts.length} / ${this.paginatedProducts.totalItems} products`;
+  handleScrollClick() {
+    const carouselPosition = this.querySelector('.left')?.offsetTop - 56; // ?: 56 = header height
+    window.scrollTo({ top: carouselPosition, behavior: 'smooth' });
   }
 
   createProductItems(products) {
-    const heartIcon = `<object type="image/svg+xml" width="32" height="32" data="../static/assets/heart.svg"></object>`;
+    if (!products?.length) {
+      return `<div>Products not found.</div>`;
+    }
     return products
-      .map(
-        ({ id, title, images, vendor, onSale, price, salePrice }) => `
-    <a href="/product/${id}" class="product-nav" data-product-id="${id}">
-        <div class="product-card">
-          <img src='${images[0]}'></img>
-          ${heartIcon}
-          <div class="label-ctr">
-            ${
-              onSale
-                ? `<span class="label">${Math.ceil(
-                    ((price - salePrice) / price) * -100
-                  )}%</span>`
-                : ''
-            }
-          </div>
-          <div class="content">
-            <div>
-              <p class="title">${title}</p>
-              <p class="description">${vendor}</p>
-            </div>
-            <div class="price-ctr">
-              ${
-                onSale
-                  ? `<p class="price original"><strong>€ ${price},00</strong></p>`
-                  : ''
-              }
-              <p class="price"><strong>€ ${
-                onSale ? salePrice : price
-              },00</strong></p>
-            </div>
-          </div>
-        </div>
-        </a>`
-      )
+      .map((p) => createProductCard(p, window.innerWidth <= 768))
       .join('');
   }
 
   render() {
     const productsEl = this.createProductItems(this.currentProducts);
+
+    const scrollButton = `
+      <button class="scroll">
+        <object type="image/svg+xml" data="../static/assets/chevron-down.svg"></object>
+      </button>`;
+
+    const categoryLabels = getCategories().map((cat) => `<span>${cat}</span>`);
+
     this.innerHTML = `
       <section id="hero">
-        <!-- Your hero content here -->
+        <div>
+          <h3>Decoration</h3>
+          ${
+            this.isMobile
+              ? ''
+              : `<div class="category-ctr">${categoryLabels.join('')}</div>`
+          }
+        </div>
+        ${
+          this.isMobile
+            ? ''
+            : `<div><img class="hero-img" src="static/images/Frame-125.png" /></div>`
+        }
+        <div><img class="hero-img" src="static/images/Frame-114.png" /></div>
+        ${this.isMobile ? '' : scrollButton}
       </section>
+      ${
+        this.isMobile
+          ? `<div class="category-ctr">${categoryLabels.join('')}</div>`
+          : ''
+      }
 
-      <div class="spacer"></div>
-      <div class="filter-bar">
-        <div class="left">
-          <p>Filter & Sort</p>
-          <p>|</p>
-          <span class="product-count">${this.paginatedProducts.totalItems}</span>
-        </div>
-        <div class="right">
-          <span style="color: gray"><i>you can apply multiple select options with cmd/shift + click</i></span>
-        </div>
-      </div>
+      <!-- MY FILTER append here -->
 
-      <div class="product-grid">
-        ${productsEl}
-      </div>
+      ${this.isMobile ? '' : `<div class="spacer"></div>`}
+      <div class="product-grid">${productsEl}</div>
       <div class="spacer"></div>
-      <div class="page-counter" style="text-align: center; margin-bottom: 32px">
-        ${this.currentProducts.length} / ${this.paginatedProducts.totalItems} products
-      </div>
-      <div>
-        <button class="more">Load more</button>
-      </div>
+      <div class="page-counter">${this.currentProducts.length} / ${
+      this.paginatedProducts.totalItems
+    } products</div>
+      <div><button class="more">Load more</button></div>
     `;
-
-    const rightEl = this.querySelector('.right');
-    if (rightEl) {
-      const myFilterEl = new MyFilter(this.filtersStateFromParams);
-      rightEl.appendChild(myFilterEl);
-    }
   }
 }
 
