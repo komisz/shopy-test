@@ -11,4 +11,8 @@ function removeItemFromLocalStorage(key) {
   localStorage.removeItem(key);
 }
 
-export { addItemToLocalStorage, getItemFromLocalStorage };
+export {
+  addItemToLocalStorage,
+  getItemFromLocalStorage,
+  removeItemFromLocalStorage,
+};

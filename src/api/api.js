@@ -1,4 +1,8 @@
-import { addItemToLocalStorage, getItemFromLocalStorage } from './storage.js';
+import {
+  addItemToLocalStorage,
+  getItemFromLocalStorage,
+  removeItemFromLocalStorage,
+} from './storage.js';
 import {
   fetchData,
   filterNFromArrBy,
@@ -23,8 +27,8 @@ const mapImages = (product) => {
 const _prepareData = async (filepath) => {
   try {
     if (getProducts()?.length) {
-      console.log('Products already fetched, skipping data prep.');
-      return;
+      // removeItemFromLocalStorage('products');
+      // console.log('Products already fetched, skipping data prep.');
     }
     const data = await fetchData(filepath);
     const products = data.map((product, idx) =>

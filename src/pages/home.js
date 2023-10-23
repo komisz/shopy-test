@@ -25,16 +25,17 @@ class HomePage extends HTMLElement {
     this.initializeCarousel(this.isMobile);
   }
 
+  disconnectedCallback() {
+    this.removeEventListener('click', this.handleEventClick);
+    window.removeEventListener('resize', this.handleResize);
+  }
+
   handleResize() {
     const isMobile = window.innerWidth <= 768;
     if (isMobile !== this.isMobile) {
       this.isMobile = isMobile;
       this.updateUi();
     }
-  }
-
-  disconnectedCallback() {
-    this.removeEventListener('click', this.handleEventClick);
   }
 
   createCarouselButton(category) {

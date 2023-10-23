@@ -15,6 +15,9 @@ class MyHeader extends HTMLElement {
     document.addEventListener('routeChange', this.updateActiveLinks.bind(this));
     window.addEventListener('resize', this.handleResize.bind(this));
   }
+  disconnectedCallback() {
+    window.removeEventListener('resize', this.handleResize);
+  }
 
   setupEventListeners() {
     const links = this.querySelectorAll('a.nav-link');

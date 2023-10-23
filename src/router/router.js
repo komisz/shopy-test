@@ -11,17 +11,18 @@ class Router {
 
   loadRoute(pathname, queryString) {
     const path = queryString ? `${pathname}?${queryString}` : pathname;
+    window.scrollTo({ top: 0 });
     this._navigateToPath(path);
   }
 
   _navigateToPath(path) {
     history.pushState({}, '', path);
     this._handleRouting(window.location.pathname);
-    window.scrollTo(0, 0);
     document.dispatchEvent(new Event('routeChange'));
   }
 
-  _handlePopstate() {
+  _handlePopstate(e) {
+    e.preventDefault();
     this._handleRouting(window.location.pathname);
     document.dispatchEvent(new Event('routeChange'));
   }
@@ -52,10 +53,11 @@ class Router {
   }
 
   _renderRoute(matchedRoute, params) {
-    this.routerOutletEl.innerHTML = matchedRoute
-      ? matchedRoute.get(params)
-      : '<h1>404 - Not Found</h1>';
-    window.scrollTo(0, 0);
+    if (this.routerOutletEl) {
+      this.routerOutletEl.innerHTML = matchedRoute
+        ? matchedRoute.get(params)
+        : '<h1>404 - Not Found</h1>';
+    }
   }
 
   _loadInitialRoute() {

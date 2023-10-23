@@ -19,7 +19,6 @@ export default class PLPPage extends HTMLElement {
     this.currentProducts = this.paginatedProducts.data[this.currentIndex];
 
     this.render();
-    this.addEventListeners();
   }
 
   get filtersStateFromParams() {
@@ -51,16 +50,21 @@ export default class PLPPage extends HTMLElement {
     this.addEventListeners();
   }
 
+  disconnectedCallback() {
+    this.removeEventListener('resize', this.handleResize);
+  }
+
   addEventListeners() {
     window.addEventListener('resize', this.handleResize.bind(this));
 
     this.addEventListener('click', (event) => {
-      if (event.target.classList.contains('product-nav')) {
-        event.preventDefault();
-        router.loadRoute(event.target.getAttribute('href'));
-      }
-      if (event.target.classList.contains('more')) {
-        event.preventDefault();
+      event.preventDefault();
+      if (event.target.matches('.product-nav, .product-nav *')) {
+        const closestHref = event.target
+          .closest('a.product-nav')
+          ?.getAttribute('href');
+        router.loadRoute(closestHref);
+      } else if (event.target.matches('.more, .more *')) {
         this.loadMoreProducts();
       }
     });

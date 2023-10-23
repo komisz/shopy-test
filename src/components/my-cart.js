@@ -11,7 +11,7 @@ export default class ShoppingCart extends HTMLElement {
   connectedCallback() {
     this.headerCartItemsCounter = document
       .querySelector('my-header')
-      ?.querySelector('.cart-counter');
+      .querySelector('#cart-control .cart-counter');
     if (!this.headerCartItemsCounter) {
       console.error('My-cart cant find header.');
     }

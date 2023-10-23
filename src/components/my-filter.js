@@ -23,8 +23,11 @@ export default class MyFilter extends HTMLElement {
   }
 
   connectedCallback() {
-    window.addEventListener('resize', this.handleResize.bind(this));
     this.addEventListeners();
+  }
+
+  disconnectedCallback() {
+    this.removeEventListener('resize', this.handleResize);
   }
 
   updateFilterState(filterKey, selectedOptions) {
@@ -61,6 +64,8 @@ export default class MyFilter extends HTMLElement {
   }
 
   addEventListeners() {
+    window.addEventListener('resize', this.handleResize.bind(this));
+
     this.addEventListener('click', (e) => {
       if (!e.target.matches('input') && !e.target.matches('select')) {
         e.preventDefault();
