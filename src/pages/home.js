@@ -39,7 +39,7 @@ class HomePage extends HTMLElement {
   }
 
   createCarouselButton(category) {
-    return `<button class="category-button" data-category="${category}">${category}</button>`;
+    return `<button class="category-button" data-category="${category}" aria-label="category-tab-selector">${category}</button>`;
   }
 
   createCarouselProduct(product) {
@@ -49,9 +49,9 @@ class HomePage extends HTMLElement {
       <li class="glide__slide">
       <a href="/product/${product.id}" class="product-nav" data-product-id="${
       product.id
-    }">
+    }" aria-label="Navigate to the product's detail page.">
         <div class="product-card">
-          <img src='${images[0]}'></img>
+          <img src='${images[0]}' alt=${images[0]}></img>
           ${heartIcon}
           <div class="label-ctr">
             ${
@@ -159,7 +159,7 @@ class HomePage extends HTMLElement {
     const catsEl = categories
       .map(
         (cat) =>
-          `<a href="/plp" class="nav-link" data-query='${key}=${cat}'>${cat}</a>`
+          `<a href="/plp" class="nav-link" data-query='${key}=${cat}' aria-label="Navigate to the product list page.">${cat}</a>`
       )
       .join('');
     return `
@@ -171,7 +171,7 @@ class HomePage extends HTMLElement {
             <div class="nav-ctr">${catsEl}</div>
           </div>
         </div>
-        <img class="hero-img" src=${side.imgPath} />
+        <img class="hero-img" src=${side.imgPath} alt=${side.label} />
       </div>
     `;
   }
@@ -193,7 +193,7 @@ class HomePage extends HTMLElement {
     ];
 
     const scrollButton = `
-        <button class="scroll">
+        <button class="scroll" aria-label="scroll-button">
           <object type="image/svg+xml" data="../static/assets/chevron-down.svg"></object>
       </button>`;
 
@@ -219,10 +219,10 @@ class HomePage extends HTMLElement {
           <div class="categories">
             ${categoriesEl}
             <div class="glide__arrows" data-glide-el="controls">
-              <button class="glide__arrow glide__arrow--prev scroll" data-glide-dir="<">
+              <button class="glide__arrow glide__arrow--prev scroll" data-glide-dir="<"  aria-label="carousel-prev-product-button">
                 <object type="image/svg+xml" width="24" height="24" data="../static/assets/left-arrow.svg" style="  pointer-events: none;"></object>
               </button>
-              <button class="glide__arrow glide__arrow--next scroll" data-glide-dir=">">
+              <button class="glide__arrow glide__arrow--next scroll" data-glide-dir=">" aria-label="carousel-next-product-button">
                 <object type="image/svg+xml" width="24" height="24" data="../static/assets/right-arrow.svg" style="  pointer-events: none;"></object>
               </button>
             </div>
@@ -231,7 +231,7 @@ class HomePage extends HTMLElement {
             <ul class="glide__slides">${productsEl}</ul>
           </div>
         </div>
-        <a class="nav-link wide" href="/plp">Shop all</a>
+        <a class="nav-link wide" href="/plp" aria-label="Go to the product list page.">Shop all</a>
       </section>`;
   }
 }

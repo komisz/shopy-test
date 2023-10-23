@@ -114,7 +114,7 @@ export default class ShoppingCart extends HTMLElement {
           }$</strong>
             </div>
             <div>
-              <button data-idx="${idx}" type="button">
+              <button data-idx="${idx}" type="button" aria-label="remove-item-from-cart-button">
                 x
               </button>
             </div>
@@ -128,7 +128,7 @@ export default class ShoppingCart extends HTMLElement {
       <div id="cart-drawer" class="cart-drawer ${open ? 'open' : ''}">
         <div class="cart-top">
           <h3>Your Cart</h3>
-          <button class="close-cart-btn" id="close-cart-btn" type="button">
+          <button class="close-cart-btn" id="close-cart-btn" type="button" aria-label="close-cart-button">
             X
           </button>
         </div>

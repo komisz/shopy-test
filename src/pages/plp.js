@@ -207,7 +207,7 @@ export default class PLPPage extends HTMLElement {
     const productsEl = this.createProductItems(this.currentProducts);
 
     const scrollButton = `
-      <button class="scroll">
+      <button class="scroll" aria-label="scroll-button">
         <object type="image/svg+xml" data="../static/assets/chevron-down.svg"></object>
       </button>`;
 
@@ -226,9 +226,9 @@ export default class PLPPage extends HTMLElement {
         ${
           this.isMobile
             ? ''
-            : `<div><img class="hero-img" src="static/images/Frame-125.png" /></div>`
+            : `<div><img class="hero-img" src="static/images/Frame-125.png" alt='hero image 1' /></div>`
         }
-        <div><img class="hero-img" src="static/images/Frame-114.png" /></div>
+        <div><img class="hero-img" src="static/images/Frame-114.png" alt='hero image 2' /></div>
         ${this.isMobile ? '' : scrollButton}
       </section>
       ${

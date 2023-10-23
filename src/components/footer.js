@@ -107,7 +107,7 @@ class MyFooter extends HTMLElement {
           <div class="column join">
             <h3>Join our world</h3>
             <p> A world where hopes and dreams come together and sky is just the beginning.</p>
-            <button>Sign up</button>
+            <button aria-label="signup-button">Sign up</button>
           </div>
 
         </div>
@@ -115,7 +115,7 @@ class MyFooter extends HTMLElement {
         <div class="bottom">
           <object
             type="image/svg+xml"
-            id="logo"
+            id="logo-small"
             height="64"
             width="230"
             data="./static/assets/Logo.svg"></object>

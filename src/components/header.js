@@ -88,19 +88,19 @@ class MyHeader extends HTMLElement {
   }
 
   createNavLink(href, query, text) {
-    return `<a class="nav-link" href="${href}" data-query="${query}">${text}</a>`;
+    return `<a class="nav-link" href="${href}" data-query="${query}" aria-label="Navigate to this category's list page.">${text}</a>`;
   }
   render() {
     const categoryNavlinks = this.renderCategories();
     const leftContainerContent = this.isMobile
       ? `
-        <button id="mobile-menu-button">
+        <button id="mobile-menu-button" aria-label="mobile-menu-button">
           <span class="bar"></span>
           <span class="bar"></span>
           <span class="bar"></span>
         </button>
 
-        <button id="search-button">
+        <button id="search-button" aria-label="search-button">
           <object type="image/svg+xml" data="../static/assets/search.svg"></object>
         </button>
 
@@ -115,28 +115,28 @@ class MyHeader extends HTMLElement {
         <div id="left-ctr">${leftContainerContent}</div>
 
         <div id="logo-ctr">
-          <a class="nav-link" id="logo" href="/">
+          <a class="nav-link" id="logo" href="/" aria-label="Navigate to the home page.">
             <object type="image/svg+xml" height="32" width="106" data="../static/assets/Logo.svg" style="pointer-events: none;"></object>
           </a>
         </div>
 
         <div id="right-ctr">
           <div id="search-ctr">
-            <button id="search-button">
+            <button id="search-button" aria-label="search-button">
               <object type="image/svg+xml" data="../static/assets/search.svg"></object>
             </button>
             <p>What are you looking for?</p>
           </div>
           <p>Stories</p>
           <div id="controls">
-            <button id="user-control">
+            <button id="user-control" aria-label="user-settings-button">
               <object type="image/svg+xml" data="../static/assets/user.svg"></object>
             </button>
-            <button id="favourite-control">
+            <button id="favourite-control" aria-label="favorite-products-button">
               <object type="image/svg+xml" data="../static/assets/heart.svg"></object>
-              <span class="cart-counter" style="pointer-events: none;">13</span>
+              <span class="favourite-counter" style="pointer-events: none;">13</span>
             </button>
-            <button id="cart-control">
+            <button id="cart-control" aria-label="toggle-cart-button">
               <object type="image/svg+xml" data="../static/assets/cart.svg" style="pointer-events: none;"></object>
               <span class="cart-counter" style="pointer-events: none;">${this.cartCounter}</span>
             </button>

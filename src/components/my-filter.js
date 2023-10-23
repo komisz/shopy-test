@@ -130,13 +130,14 @@ export default class MyFilter extends HTMLElement {
     `;
 
     this.innerHTML = this.isMobile
-      ? `<div class="left"><span class="product-count">${
-          this.productCount
-        } items</span></div>
-         <div class="right"><button type="button" id="toggle">${filterIcon}</button><p>Filter & Sort</p><span>${
+      ? `<div class="left">
+          <span class="product-count">${this.productCount} items
+          </span>
+        </div>
+        <div class="right"><button type="button" id="toggle" aria-label="toggle-filters-button">${filterIcon}</button><p>Filter & Sort</p><span>${
           this.filterState.vendors.length + this.filterState.categories.length
         }</span></div>`
-      : `<div class="left"><button type="button" id="toggle">${filterIcon}</button><p>Filter & Sort</p><p>|</p><span class="product-count">${this.productCount} items</span></div>
+      : `<div class="left"><button type="button" id="toggle" aria-label="toggle-filters-button">${filterIcon}</button><p>Filter & Sort</p><p>|</p><span class="product-count">${this.productCount} items</span></div>
          <div class="right">${vendorSelectorEl.outerHTML}${categorySelectorEl.outerHTML}${otherFilters}</div>`;
   }
 }
