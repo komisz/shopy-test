@@ -49,7 +49,7 @@ const lowercaseKeys = (obj) =>
   );
 
 const getRandomItems = (items, n = 5) => {
-  const itemsCopy = [...items]; // Create a copy of the input array
+  const itemsCopy = [...items];
   return Array.from({ length: Math.min(n, itemsCopy.length) }, () => {
     const randomIndex = Math.floor(Math.random() * itemsCopy.length);
     return itemsCopy.splice(randomIndex, 1)[0];

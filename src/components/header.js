@@ -12,7 +12,6 @@ class MyHeader extends HTMLElement {
   }
 
   connectedCallback() {
-    document.addEventListener('routeChange', this.updateActiveLinks.bind(this));
     window.addEventListener('resize', this.handleResize.bind(this));
   }
   disconnectedCallback() {
@@ -54,16 +53,6 @@ class MyHeader extends HTMLElement {
     }
   }
 
-  updateActiveLinks() {
-    const currentPath = window.location.pathname;
-    this.querySelectorAll('a.nav-link').forEach((link) => {
-      link.classList.remove('active');
-      if (link.getAttribute('href') === currentPath) {
-        link.classList.add('active');
-      }
-    });
-  }
-
   handleLinkClick(event) {
     event.preventDefault();
     const target = event.target.closest('a.nav-link');
@@ -72,7 +61,7 @@ class MyHeader extends HTMLElement {
       const queryString = target.getAttribute('data-query');
       router.loadRoute(path, queryString);
 
-      if (this.isMobile) {
+      if (this.isMobile && !target.id) {
         this.querySelector('#mobile-nav')?.classList.toggle('open');
         this.querySelector('#mobile-menu-button')?.classList.toggle('open');
       }
@@ -134,7 +123,7 @@ class MyHeader extends HTMLElement {
             </button>
             <button id="favourite-control" aria-label="favorite-products-button">
               <object type="image/svg+xml" data="../static/assets/heart.svg"></object>
-              <span class="favourite-counter" style="pointer-events: none;">13</span>
+              <span class="cart-counter" style="pointer-events: none;">13</span>
             </button>
             <button id="cart-control" aria-label="toggle-cart-button">
               <object type="image/svg+xml" data="../static/assets/cart.svg" style="pointer-events: none;"></object>

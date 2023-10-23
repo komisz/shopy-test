@@ -609,14 +609,14 @@ PDP
   flex-shrink: 0;
 }
 
-.product-info .first {
+pdp-page .first {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
 }
 
-.product-info .first h3 {
+pdp-page .first h3 {
   color: var(--primary-offblack);
   font-family: Forum;
   font-size: 24px;
@@ -626,7 +626,7 @@ PDP
   letter-spacing: 0.96px;
   flex: 1;
 }
-.product-info .first .description1 {
+pdp-page .first .description1 {
   color: var(--functional-dark-grey, #58554c);
   font-family: Roboto;
   font-size: 14px;
@@ -635,7 +635,7 @@ PDP
   line-height: 140%; /* 19.6px */
   letter-spacing: 0.14px;
 }
-.product-info .first .price {
+pdp-page .first .price {
   color: var(--primary-offblack);
   font-family: Roboto;
   font-size: 20px;
@@ -645,14 +645,14 @@ PDP
   letter-spacing: 0.2px;
 }
 
-.product-info .second {
+pdp-page .second {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 16px;
   align-self: stretch;
 }
-.product-info .second label {
+pdp-page .second label {
   color: var(--primary-offblack);
   font-family: Roboto;
   font-size: 16px;
@@ -662,7 +662,7 @@ PDP
   letter-spacing: 0.16px;
 }
 
-.product-info .third {
+pdp-page .third {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -670,7 +670,7 @@ PDP
   align-self: stretch;
 }
 
-.product-info .third select {
+pdp-page .third select {
   width: 100%;
   color: var(--primary-offblack);
   font-family: Roboto;
@@ -693,13 +693,13 @@ PDP
   outline: none;
 }
 
-.product-info .third .arrow {
+pdp-page .third .arrow {
   position: absolute;
   top: 1.5px;
   right: 0;
 }
 
-.product-info .third p.secondary {
+pdp-page .third p.secondary {
   color: var(--primary-offblack);
   text-align: center;
   font-family: Forum;
@@ -711,7 +711,7 @@ PDP
 
   display: inline;
 }
-.product-info .third p.tertiary {
+pdp-page .third p.tertiary {
   color: var(--primary-offblack);
   text-align: center;
   font-family: Roboto;
@@ -722,19 +722,19 @@ PDP
   letter-spacing: 0.1px;
 }
 
-.product-info .third .ctr {
+pdp-page .third .ctr {
   display: flex;
   align-items: center;
   gap: 4p;
 }
 
-.product-info .fourth {
+pdp-page .fourth {
   display: flex;
   gap: 8px;
   width: 100%;
 }
 
-.product-info .disclaimer {
+pdp-page .disclaimer {
   color: var(--functional-dark-grey, #58554c);
   text-align: center;
   font-family: Roboto;
@@ -745,7 +745,7 @@ PDP
   letter-spacing: 0.12px;
 }
 
-.product-info .fourth button {
+pdp-page .fourth button {
   display: flex;
   height: 56px;
   padding: 16px 48px;
@@ -766,7 +766,7 @@ PDP
   letter-spacing: 0.6px;
   cursor: pointer;
 }
-.product-info .fourth select {
+pdp-page .fourth select {
   display: flex;
   width: 72px;
   height: 56px;
@@ -798,7 +798,7 @@ PDP
   outline: none;
 }
 
-.product-info .fifth {
+pdp-page .fifth {
   display: flex;
   padding: 16px 32px;
   flex-direction: column;
@@ -808,14 +808,14 @@ PDP
   background: var(--secondary-mellow-yellow, #fcf6c3);
 }
 
-.product-info .fifth > div {
+pdp-page .fifth > div {
   display: flex;
   height: 24px;
   align-items: center;
   gap: 8px;
   align-self: stretch;
 }
-.product-info .fifth > div > p {
+pdp-page .fifth > div > p {
   color: var(--primary-offblack, #231f1e);
   font-family: Roboto;
   font-size: 12px;
@@ -825,14 +825,14 @@ PDP
   letter-spacing: 0.12px;
 }
 
-.product-info .sixth {
+pdp-page .sixth {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
   align-self: stretch;
 }
-.product-info .sixth p {
+pdp-page .sixth p {
   color: var(--primary-offblack, #231f1e);
   font-family: Roboto;
   font-size: 12px;
@@ -841,11 +841,11 @@ PDP
   line-height: 140%; /* 16.8px */
   letter-spacing: 0.12px;
 }
-.product-info .sixth > div {
+pdp-page .sixth > div {
   display: flex;
   gap: 16px;
 }
-.product-info .sixth button {
+pdp-page .sixth button {
   display: flex;
   padding: 4px 12px 4px 8px;
   align-items: center;
@@ -863,17 +863,17 @@ PDP
   letter-spacing: 0.14px;
 }
 
-.product-info .seventh {
+pdp-page .seventh {
   gap: 0px;
 }
 
-.product-info .accordion-top.closed {
+pdp-page .accordion-top.closed {
   border-bottom: 1px solid var(--primary-offblack);
 }
-.product-info .accordion-top:not(:last-child) {
+pdp-page .accordion-top:not(:last-child) {
   border-bottom: none;
 }
-.product-info .accordion-top {
+pdp-page .accordion-top {
   display: flex;
   padding: 24px 0px;
   align-items: center;
@@ -890,7 +890,7 @@ PDP
   line-height: 150%; /* 24px */
   letter-spacing: 0.64px;
 }
-.product-info .accordion-content {
+pdp-page .accordion-content {
   color: var(--primary-offblack, #231f1e);
   font-family: Roboto;
   font-size: 16px;
@@ -901,7 +901,7 @@ PDP
   padding-bottom: 24px;
 }
 
-.product-info .seventh {
+pdp-page .seventh {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -932,7 +932,7 @@ PDP
 }
 
 .color-thumbnail img {
-  object-fit: fit;
+  object-fit: contain;
   aspect-ratio: 1;
   width: 100%;
 }
@@ -956,7 +956,7 @@ PDP
   align-self: stretch;
 }
 
-.product-info .labels > span {
+pdp-page .labels > span {
   display: flex;
   height: 30px;
   padding: 0 12px;
@@ -1693,7 +1693,7 @@ plp-page .category-ctr span {
   }
 
   plp-page #hero img {
-    max-height: 50vh;
+    max-height: 60vh;
   }
   plp-page #hero h3 {
     color: var(--primary-offwhite, #fff);
@@ -1740,5 +1740,37 @@ plp-page .category-ctr span {
   plp-page #hero > div:first-child {
     bottom: 32px;
     gap: 0;
+  }
+
+  pdp-page .first {
+    gap: 4px;
+  }
+  pdp-page .first h3 {
+    font-size: 28px;
+    line-height: 130%; /* 38.4px */
+    letter-spacing: 1.12px;
+  }
+  pdp-page .second {
+    gap: 12px;
+  }
+  .color-selector {
+    gap: 23px;
+  }
+
+  pdp-page .fourth {
+    flex-direction: column;
+  }
+
+  pdp-page .sixth {
+    margin-bottom: 64px;
+  }
+  pdp-page .fourth select {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  pdp-page .fourth button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    width: 100%;
   }
 }

@@ -1,5 +1,4 @@
 export default class ShoppingCart extends HTMLElement {
-  // todo: remove header cart counter logic
   constructor() {
     super();
     this.items = [];
